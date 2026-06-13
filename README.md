@@ -25,9 +25,23 @@ Upload post images into:
 posts/
 ```
 
+## Add Highlights
+Upload highlight images into:
+
+```text
+highlights/
+```
+
+## Add Stories
+Upload story images into:
+
+```text
+stories/
+```
+
 Supported image types: `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`.
 
-When hosted on GitHub Pages, the website reads the public `posts/` folder and shows uploaded images in the Posts grid automatically.
+When hosted on GitHub Pages, the website reads the public `posts/`, `highlights/`, and `stories/` folders and shows uploaded images automatically.
 
 ## GitHub Pages
 Enable GitHub Pages from repository settings and serve from the `main` branch root.
