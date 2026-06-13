@@ -136,7 +136,7 @@
   `;
   document.head.appendChild(style);
 
-  window.addEventListener("load", async () => {
+  async function initStoryVideoFix() {
     ensureVideoElement();
     const stories = await getStoryMedia();
     renderStories(stories);
@@ -146,5 +146,11 @@
         closeStory();
       }
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    window.addEventListener("load", initStoryVideoFix);
+  } else {
+    initStoryVideoFix();
+  }
 })();
