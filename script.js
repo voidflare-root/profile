@@ -26,6 +26,7 @@ function applyHostedFixes() {
     h1{max-width:100%;font-size:clamp(2rem,8.5vw,4.4rem);overflow-wrap:anywhere}.name-stack{min-width:0}@media (min-width:1024px){h1{font-size:clamp(2rem,4.2vw,3.6rem)}}
     .devotion-tags{margin-top:12px;display:grid;grid-template-columns:1fr;gap:8px}.devotion-tags span{min-height:38px;border:1px solid rgba(168,85,247,.34);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;padding:8px 10px;color:#fff;background:linear-gradient(135deg,rgba(138,43,226,.18),rgba(168,85,247,.08)),rgba(255,255,255,.055);font-size:.82rem;font-weight:900;text-align:center;text-shadow:0 0 18px rgba(168,85,247,.72);box-shadow:inset 0 0 20px rgba(168,85,247,.05)}
     .social-link-block{margin-top:14px}.social-link-block h2{margin:0 0 10px;color:#a855f7;font-size:.9rem;font-weight:900;text-transform:uppercase;text-shadow:0 0 18px rgba(168,85,247,.72)}.social-name-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.social-name-row a{min-height:44px;border:1px solid rgba(168,85,247,.32);border-radius:15px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px;color:#fff;background:radial-gradient(circle at 30% 110%,rgba(255,221,85,.22) 0 18%,transparent 32%),linear-gradient(135deg,rgba(131,58,180,.26),rgba(253,29,29,.12),rgba(252,176,69,.14));font-size:.8rem;font-weight:900;box-shadow:inset 0 0 20px rgba(168,85,247,.05);transition:transform 160ms ease,box-shadow 160ms ease}.social-name-row a:hover,.social-name-row a:active{transform:translateY(-2px);box-shadow:0 0 32px rgba(168,85,247,.42)}.qr-card .modal-close{top:10px;right:10px;margin:0;border-color:rgba(168,85,247,.34);background:rgba(5,5,10,.88);box-shadow:0 0 22px rgba(168,85,247,.34)}
+    .song-button{margin-top:12px;min-height:42px;border:1px solid rgba(168,85,247,.38);border-radius:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;color:#fff;background:linear-gradient(135deg,rgba(138,43,226,.22),rgba(168,85,247,.1)),rgba(255,255,255,.065);cursor:pointer;font-size:.86rem;font-weight:900;box-shadow:inset 0 0 20px rgba(168,85,247,.06);transition:transform 160ms ease,box-shadow 160ms ease,background 160ms ease}.song-button:hover,.song-button:active,.song-button.is-playing{transform:translateY(-2px);background:rgba(168,85,247,.2);box-shadow:0 0 32px rgba(168,85,247,.42)}
   `;
   document.head.appendChild(style);
 
@@ -46,9 +47,25 @@ function applyHostedFixes() {
     block.innerHTML = `<h2>Social Links</h2><div class="social-name-row"><a href="https://www.instagram.com/i.ampys.ghost?igsh=MTZjMXNnNjJwaG43cg==&utm_source=ig_contact_invite" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i><span>Piyush</span></a><a href="https://www.instagram.com/itz._.rounak_2.0?igsh=MXNnZ2M4anpyMmJxZQ==" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i><span>Rounak</span></a><a href="https://www.instagram.com/shreekant6564?igsh=MWw2aHZheGJ5cGJudA==" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i><span>Shreekant</span></a></div>`;
     roles?.insertAdjacentElement('afterend', block);
   }
+
+  if (!document.querySelector('#songButton')) {
+    const nameStack = document.querySelector('.name-stack');
+    const button = document.createElement('button');
+    button.className = 'song-button';
+    button.id = 'songButton';
+    button.type = 'button';
+    button.innerHTML = '<i class="fa-solid fa-music"></i><span>Favorite Song</span>';
+    const audio = document.createElement('audio');
+    audio.id = 'favoriteSong';
+    audio.src = 'song.mp3';
+    audio.preload = 'metadata';
+    nameStack?.append(button, audio);
+    setupSongButton(button, audio);
+  }
 }
 
 function showToast(message) { toast.textContent = message; toast.classList.add('show'); window.clearTimeout(showToast.timer); showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2200); }
+function setupSongButton(button, audio) { button.addEventListener('click', async () => { if (audio.paused) { try { await audio.play(); button.classList.add('is-playing'); button.querySelector('span').textContent = 'Playing Song'; } catch { showToast('song.mp3 upload karo, phir song play hoga.'); } return; } audio.pause(); button.classList.remove('is-playing'); button.querySelector('span').textContent = 'Favorite Song'; }); audio.addEventListener('ended', () => { button.classList.remove('is-playing'); button.querySelector('span').textContent = 'Favorite Song'; }); }
 function isImageFile(name) { return imageExtensions.some((extension) => name.toLowerCase().endsWith(extension)); }
 function titleFromFilename(name) { return name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()); }
 function getGithubRepoFromUrl() { const host = window.location.hostname; const pathParts = window.location.pathname.split('/').filter(Boolean); if (!host.endsWith('github.io')) return ''; const owner = host.replace('.github.io', ''); const repo = pathParts[0] || `${owner}.github.io`; return `${owner}/${repo}`; }
@@ -67,5 +84,8 @@ modalClose.addEventListener('click', closeModal); qrClose.addEventListener('clic
 contactForm.addEventListener('submit', (event) => { event.preventDefault(); contactForm.reset(); showToast('Message ready. Connect backend/email to receive it.'); });
 profileDp.addEventListener('error', () => { profileDp.onerror = null; profileDp.src = fallbackDp; }); window.addEventListener('load', () => { if (!profileDp.complete || profileDp.naturalWidth === 0) profileDp.src = fallbackDp; });
 
+const existingSongButton = document.querySelector('#songButton');
+const existingFavoriteSong = document.querySelector('#favoriteSong');
+if (existingSongButton && existingFavoriteSong) setupSongButton(existingSongButton, existingFavoriteSong);
 applyHostedFixes();
 loadPosts();
