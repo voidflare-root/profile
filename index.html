@@ -15,6 +15,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      .name-row{display:flex;align-items:center;gap:clamp(10px,2vw,16px);min-width:0}.instagram-link{width:clamp(40px,8vw,54px);height:clamp(40px,8vw,54px);flex:0 0 auto;border:1px solid rgba(168,85,247,.42);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;color:white;background:radial-gradient(circle at 30% 110%,#ffdd55 0 14%,transparent 28%),linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);box-shadow:0 0 28px rgba(168,85,247,.44);transition:transform 160ms ease,box-shadow 160ms ease}.instagram-link:hover,.instagram-link:active{transform:translateY(-2px) scale(1.04);box-shadow:0 0 38px rgba(168,85,247,.72)}.instagram-link i{font-size:clamp(1.18rem,3vw,1.55rem)}
+    </style>
   </head>
   <body>
     <main class="app-shell">
@@ -25,7 +28,12 @@
           </div>
           <div class="name-stack">
             <span>HEX GHOST</span>
-            <h1>PIYUSH</h1>
+            <div class="name-row">
+              <h1>PIYUSH</h1>
+              <a class="instagram-link" href="https://www.instagram.com/i.ampys.ghost?igsh=MTZjMXNnNjJwaG43cg==&utm_source=ig_contact_invite" target="_blank" rel="noreferrer" aria-label="Open PIYUSH Instagram">
+                <i class="fa-brands fa-instagram"></i>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -82,97 +90,15 @@
         </div>
       </section>
 
-      <section class="info-section" id="about">
-        <article class="glass-card">
-          <h2>About Me</h2>
-          <p>I build modern Android apps, websites, AI projects, and automation systems with a dark premium interface style.</p>
-        </article>
-      </section>
-
-      <section class="info-section" id="skills">
-        <article class="glass-card">
-          <h2>Skills</h2>
-          <div class="chip-grid">
-            <span>Android Development</span>
-            <span>Kotlin</span>
-            <span>Python</span>
-            <span>Web Development</span>
-            <span>AI Tools</span>
-            <span>Telegram Bots</span>
-          </div>
-        </article>
-      </section>
-
-      <section class="info-section" id="projects">
-        <article class="glass-card">
-          <h2>Projects</h2>
-          <div class="mini-list">
-            <a href="#"><span>AI Dashboard</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-            <a href="#"><span>Android Creator App</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-            <a href="#"><span>Telegram Automation Bot</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          </div>
-        </article>
-      </section>
-
-      <section class="info-section" id="services">
-        <article class="glass-card">
-          <h2>Services</h2>
-          <div class="service-grid">
-            <span><i class="fa-solid fa-mobile-screen-button"></i> App UI</span>
-            <span><i class="fa-solid fa-code"></i> Websites</span>
-            <span><i class="fa-solid fa-robot"></i> AI Projects</span>
-          </div>
-        </article>
-      </section>
-
-      <section class="info-section" id="contact">
-        <article class="glass-card">
-          <h2>Contact</h2>
-          <div class="contact-options">
-            <a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-whatsapp"></i>
-              <span>Message Ǥнσsτ on WhatsApp</span>
-            </a>
-            <a href="https://t.me/PiyushxHelp_Bot" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-telegram"></i>
-              <span>Telegram Bot</span>
-            </a>
-          </div>
-          <form class="contact-form" id="contactForm">
-            <input type="text" placeholder="Name" required />
-            <input type="email" placeholder="Email" required />
-            <textarea placeholder="Message" rows="4" required></textarea>
-            <button type="submit">Send Message</button>
-          </form>
-        </article>
-      </section>
+      <section class="info-section" id="about"><article class="glass-card"><h2>About Me</h2><p>I build modern Android apps, websites, AI projects, and automation systems with a dark premium interface style.</p></article></section>
+      <section class="info-section" id="skills"><article class="glass-card"><h2>Skills</h2><div class="chip-grid"><span>Android Development</span><span>Kotlin</span><span>Python</span><span>Web Development</span><span>AI Tools</span><span>Telegram Bots</span></div></article></section>
+      <section class="info-section" id="projects"><article class="glass-card"><h2>Projects</h2><div class="mini-list"><a href="#"><span>AI Dashboard</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a href="#"><span>Android Creator App</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a href="#"><span>Telegram Automation Bot</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></article></section>
+      <section class="info-section" id="services"><article class="glass-card"><h2>Services</h2><div class="service-grid"><span><i class="fa-solid fa-mobile-screen-button"></i> App UI</span><span><i class="fa-solid fa-code"></i> Websites</span><span><i class="fa-solid fa-robot"></i> AI Projects</span></div></article></section>
+      <section class="info-section" id="contact"><article class="glass-card"><h2>Contact</h2><div class="contact-options"><a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i><span>Message Ǥнσsτ on WhatsApp</span></a><a href="https://t.me/PiyushxHelp_Bot" target="_blank" rel="noreferrer"><i class="fa-brands fa-telegram"></i><span>Telegram Bot</span></a></div><form class="contact-form" id="contactForm"><input type="text" placeholder="Name" required /><input type="email" placeholder="Email" required /><textarea placeholder="Message" rows="4" required></textarea><button type="submit">Send Message</button></form></article></section>
     </main>
 
-    <div class="post-modal" id="postModal" aria-hidden="true">
-      <div class="modal-card">
-        <button class="modal-close" id="modalClose" aria-label="Close post">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <img id="modalImage" alt="" />
-        <div>
-          <span id="modalTag"></span>
-          <h2 id="modalTitle"></h2>
-          <p id="modalDescription"></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="qr-modal" id="qrModal" aria-hidden="true">
-      <div class="qr-card">
-        <button class="modal-close" id="qrClose" aria-label="Close QR">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <h2>PIYUSH</h2>
-        <p id="qrLink"></p>
-        <img id="qrImage" alt="PIYUSH profile QR code" />
-      </div>
-    </div>
-
+    <div class="post-modal" id="postModal" aria-hidden="true"><div class="modal-card"><button class="modal-close" id="modalClose" aria-label="Close post"><i class="fa-solid fa-xmark"></i></button><img id="modalImage" alt="" /><div><span id="modalTag"></span><h2 id="modalTitle"></h2><p id="modalDescription"></p></div></div></div>
+    <div class="qr-modal" id="qrModal" aria-hidden="true"><div class="qr-card"><button class="modal-close" id="qrClose" aria-label="Close QR"><i class="fa-solid fa-xmark"></i></button><h2>PIYUSH</h2><p id="qrLink"></p><img id="qrImage" alt="PIYUSH profile QR code" /></div></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="script.js"></script>
   </body>
