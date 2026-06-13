@@ -26,37 +26,16 @@ function addTabAndStoryEnhancements() {
   if (!postsSection || !postGrid) return;
 
   const sectionTitle = postsSection.querySelector('.section-title');
-  const title = sectionTitle?.querySelector('h2');
-  let postsToggle = document.querySelector('#postsToggle');
-  if (title && !postsToggle) {
-    postsToggle = document.createElement('button');
-    postsToggle.className = 'posts-toggle is-open';
-    postsToggle.id = 'postsToggle';
-    postsToggle.type = 'button';
-    postsToggle.innerHTML = '<i class="fa-solid fa-table-cells"></i><span>Posts</span>';
-    title.replaceWith(postsToggle);
+  if (sectionTitle) {
+    sectionTitle.innerHTML = `
+      <button class="posts-toggle is-open" id="postsToggle" type="button"><i class="fa-solid fa-table-cells"></i><span>Posts</span></button>
+      <button class="others-toggle" id="othersToggle" type="button"><i class="fa-solid fa-code"></i><span>Skills</span></button>
+      <button class="notes-toggle" id="notesToggle" type="button"><i class="fa-solid fa-note-sticky"></i><span>Notes</span></button>
+    `;
   }
-
-  const titleSub = sectionTitle?.querySelector('span');
-  let skillsToggle = document.querySelector('#othersToggle');
-  if (titleSub && !skillsToggle) {
-    skillsToggle = document.createElement('button');
-    skillsToggle.className = 'others-toggle';
-    skillsToggle.id = 'othersToggle';
-    skillsToggle.type = 'button';
-    titleSub.replaceWith(skillsToggle);
-  }
-  if (skillsToggle) skillsToggle.innerHTML = '<i class="fa-solid fa-code"></i><span>Skills</span>';
-
-  let notesToggle = document.querySelector('#notesToggle');
-  if (sectionTitle && !notesToggle) {
-    notesToggle = document.createElement('button');
-    notesToggle.className = 'notes-toggle';
-    notesToggle.id = 'notesToggle';
-    notesToggle.type = 'button';
-    notesToggle.innerHTML = '<i class="fa-solid fa-note-sticky"></i><span>Notes</span>';
-    sectionTitle.appendChild(notesToggle);
-  }
+  const postsToggle = document.querySelector('#postsToggle');
+  const skillsToggle = document.querySelector('#othersToggle');
+  const notesToggle = document.querySelector('#notesToggle');
 
   document.querySelector('#profileTabs')?.remove();
   postGrid.classList.add('tab-panel', 'is-active');
@@ -120,7 +99,7 @@ function addTabAndStoryEnhancements() {
 
   if (!document.querySelector('script[src^="story-video-fix.js"]')) {
     const videoFix = document.createElement('script');
-    videoFix.src = 'story-video-fix.js?v=2';
+    videoFix.src = 'story-video-fix.js?v=3';
     document.body.appendChild(videoFix);
   }
 }
