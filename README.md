@@ -9,6 +9,15 @@ Upload your profile picture at the repo root with this exact name:
 dp.png
 ```
 
+## Add Favorite Song
+Upload your favorite song at the repo root with this exact name:
+
+```text
+song.mp3
+```
+
+The song button under `PIYUSH` will play/pause this file.
+
 ## Add Posts
 Upload post images into:
 
