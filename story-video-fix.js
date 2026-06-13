@@ -12,7 +12,7 @@
     const pathParts = window.location.pathname.split("/").filter(Boolean);
 
     if (!host.endsWith("github.io")) {
-      return "";
+      return "voidflare-root/profile";
     }
 
     const owner = host.replace(".github.io", "");
@@ -20,14 +20,14 @@
     return `${owner}/${repo}`;
   }
 
-  async function getStoryMedia() {
+  async function getFolderMedia(folder) {
     const repo = window.PORTFOLIO_REPO || getGithubRepoFromUrl();
 
     if (!repo) {
       return [];
     }
 
-    const response = await fetch(`https://api.github.com/repos/${repo}/contents/stories`, { cache: "no-store" });
+    const response = await fetch(`https://api.github.com/repos/${repo}/contents/${folder}`, { cache: "no-store" });
 
     if (!response.ok) {
       return [];
@@ -41,6 +41,10 @@
         title: titleFromFilename(file.name),
         type: isVideo(file.name) ? "video" : "image",
       }));
+  }
+
+  async function getStoryMedia() {
+    return [...(await getFolderMedia("stories")), ...(await getFolderMedia("stores"))];
   }
 
   function ensureVideoElement() {
