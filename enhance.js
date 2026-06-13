@@ -2,7 +2,7 @@ function addTabAndStoryEnhancements() {
   const style = document.createElement('style');
   style.textContent = `
     .dp-ring{border:0;cursor:pointer;transition:transform 160ms ease,box-shadow 160ms ease}.dp-ring:hover,.dp-ring:active{transform:scale(1.03);box-shadow:0 0 46px rgba(168,85,247,.78)}
-    .posts-toggle,.others-toggle{min-height:38px;border:1px solid rgba(168,85,247,.32);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 13px;color:#fff;background:rgba(255,255,255,.065);cursor:pointer;font-size:.82rem;font-weight:900;box-shadow:inset 0 0 20px rgba(168,85,247,.05)}.posts-toggle:hover,.posts-toggle:active,.posts-toggle.is-open,.others-toggle:hover,.others-toggle:active,.others-toggle.is-open{background:rgba(168,85,247,.2);box-shadow:0 0 32px rgba(168,85,247,.42)}
+    .section-title{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center}.posts-toggle,.others-toggle,.notes-toggle{min-height:38px;border:1px solid rgba(168,85,247,.32);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 13px;color:#fff;background:rgba(255,255,255,.065);cursor:pointer;font-size:.82rem;font-weight:900;box-shadow:inset 0 0 20px rgba(168,85,247,.05)}.posts-toggle:hover,.posts-toggle:active,.posts-toggle.is-open,.others-toggle:hover,.others-toggle:active,.others-toggle.is-open,.notes-toggle:hover,.notes-toggle:active,.notes-toggle.is-open{background:rgba(168,85,247,.2);box-shadow:0 0 32px rgba(168,85,247,.42)}
     .profile-tabs{display:none!important}.tab-panel[hidden]{display:none!important}
     .tab-card-grid{padding:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tab-card-grid article,.tab-list a{min-height:104px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;align-content:center;justify-items:center;gap:10px;padding:12px;color:#fff;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055);text-align:center;font-size:.82rem;box-shadow:inset 0 0 20px rgba(168,85,247,.04)}.tab-card-grid i,.tab-list i{color:#a855f7;font-size:1.35rem;text-shadow:0 0 16px rgba(168,85,247,.72)}.tab-list{padding:10px;display:grid;gap:8px}.tab-list a{min-height:58px;grid-template-columns:minmax(0,1fr) auto;align-content:center;justify-items:stretch;text-align:left}
     body.is-others-mode .tab-panel[data-panel="skills"],body.is-others-mode .tab-panel[data-panel="projects"],body.is-others-mode .tab-panel[data-panel="services"],body.is-others-mode .tab-panel[data-panel="notes"]{margin:10px;border:1px solid rgba(168,85,247,.18);border-radius:22px;background:rgba(255,255,255,.035)}body.is-others-mode .tab-panel[data-panel="projects"],body.is-others-mode .tab-panel[data-panel="services"],body.is-others-mode .tab-panel[data-panel="notes"]{margin-top:0}
@@ -48,6 +48,16 @@ function addTabAndStoryEnhancements() {
   }
   if (skillsToggle) skillsToggle.innerHTML = '<i class="fa-solid fa-code"></i><span>Skills</span>';
 
+  let notesToggle = document.querySelector('#notesToggle');
+  if (sectionTitle && !notesToggle) {
+    notesToggle = document.createElement('button');
+    notesToggle.className = 'notes-toggle';
+    notesToggle.id = 'notesToggle';
+    notesToggle.type = 'button';
+    notesToggle.innerHTML = '<i class="fa-solid fa-note-sticky"></i><span>Notes</span>';
+    sectionTitle.appendChild(notesToggle);
+  }
+
   document.querySelector('#profileTabs')?.remove();
   postGrid.classList.add('tab-panel', 'is-active');
   postGrid.dataset.panel = 'posts';
@@ -64,32 +74,26 @@ function addTabAndStoryEnhancements() {
   }
 
   const tabPanels = document.querySelectorAll('.tab-panel');
-  const showPostsMode = () => {
-    skillsToggle?.classList.remove('is-open');
-    postsToggle?.classList.add('is-open');
-    document.body.classList.remove('is-others-mode');
+  const setPanel = (activePanels) => {
     tabPanels.forEach((panel) => {
-      const active = panel.dataset.panel === 'posts';
+      const active = activePanels.includes(panel.dataset.panel);
       panel.hidden = !active;
       panel.classList.toggle('is-active', active);
     });
   };
-  const showSkillsMode = () => {
-    skillsToggle?.classList.add('is-open');
-    postsToggle?.classList.remove('is-open');
-    document.body.classList.add('is-others-mode');
-    tabPanels.forEach((panel) => {
-      const active = ['skills', 'projects', 'services', 'notes'].includes(panel.dataset.panel);
-      panel.hidden = !active;
-      panel.classList.toggle('is-active', active);
-    });
+  const setButtons = (active) => {
+    postsToggle?.classList.toggle('is-open', active === 'posts');
+    skillsToggle?.classList.toggle('is-open', active === 'skills');
+    notesToggle?.classList.toggle('is-open', active === 'notes');
+    document.body.classList.toggle('is-others-mode', active !== 'posts');
   };
+  const showPostsMode = () => { setButtons('posts'); setPanel(['posts']); };
+  const showSkillsMode = () => { setButtons('skills'); setPanel(['skills', 'projects', 'services']); };
+  const showNotesMode = () => { setButtons('notes'); setPanel(['notes']); };
 
   postsToggle?.addEventListener('click', showPostsMode);
-  skillsToggle?.addEventListener('click', () => {
-    if (document.body.classList.contains('is-others-mode')) showPostsMode();
-    else showSkillsMode();
-  });
+  skillsToggle?.addEventListener('click', showSkillsMode);
+  notesToggle?.addEventListener('click', showNotesMode);
 
   async function loadNotes() {
     const notesList = document.querySelector('#notesList');
