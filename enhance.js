@@ -5,6 +5,7 @@ function addTabAndStoryEnhancements() {
     .others-toggle{min-height:38px;border:1px solid rgba(168,85,247,.32);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 13px;color:#fff;background:rgba(255,255,255,.065);cursor:pointer;font-size:.82rem;font-weight:900;box-shadow:inset 0 0 20px rgba(168,85,247,.05)}.others-toggle:hover,.others-toggle:active,.others-toggle.is-open{background:rgba(168,85,247,.2);box-shadow:0 0 32px rgba(168,85,247,.42)}
     .profile-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:1px solid rgba(168,85,247,.18);background:rgba(255,255,255,.035)}.profile-tabs[hidden]{display:none!important}.profile-tabs button{position:relative;min-height:54px;border:0;display:inline-flex;align-items:center;justify-content:center;gap:7px;color:#b8b8b8;background:transparent;cursor:pointer;font-size:.78rem;font-weight:900}.profile-tabs button.is-active{color:#fff}.profile-tabs button.is-active:after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:3px;border-radius:999px 999px 0 0;background:linear-gradient(90deg,#8a2be2,#a855f7);box-shadow:0 0 16px rgba(168,85,247,.7)}.tab-panel[hidden]{display:none!important}
     .tab-card-grid{padding:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tab-card-grid article,.tab-list a{min-height:104px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;align-content:center;justify-items:center;gap:10px;padding:12px;color:#fff;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055);text-align:center;font-size:.82rem;box-shadow:inset 0 0 20px rgba(168,85,247,.04)}.tab-card-grid i,.tab-list i{color:#a855f7;font-size:1.35rem;text-shadow:0 0 16px rgba(168,85,247,.72)}.tab-list{padding:10px;display:grid;gap:8px}.tab-list a{min-height:58px;grid-template-columns:minmax(0,1fr) auto;align-content:center;justify-items:stretch;text-align:left}.tab-contact{padding:10px}
+    body.is-others-mode .tab-panel[data-panel="skills"],body.is-others-mode .tab-panel[data-panel="projects"],body.is-others-mode .tab-panel[data-panel="services"]{margin:10px;border:1px solid rgba(168,85,247,.18);border-radius:22px;background:rgba(255,255,255,.035)}body.is-others-mode .tab-panel[data-panel="projects"],body.is-others-mode .tab-panel[data-panel="services"]{margin-top:0}
     .info-section{display:none!important}.info-section#contact{display:block!important}body.is-others-mode .stories-section,body.is-others-mode .info-section#contact{display:none!important}
     .story-modal{padding:0;background:rgba(0,0,0,.92);backdrop-filter:blur(16px)}.story-card{width:min(460px,100%);height:100vh;border:0;border-radius:0;display:grid;grid-template-rows:1fr auto;background:#05050a;box-shadow:0 0 80px rgba(168,85,247,.48)}.story-card img{width:100%;height:100%;min-height:0;display:block;object-fit:cover;background:#05050a}.story-card h2{margin:0;padding:16px 18px 22px;font-size:1rem;background:linear-gradient(180deg,rgba(5,5,10,.2),rgba(5,5,10,.96))}.story-card .modal-close{top:14px;right:14px;margin:0;z-index:2;background:rgba(5,5,10,.82);box-shadow:0 0 22px rgba(168,85,247,.34)}
   `;
@@ -78,9 +79,25 @@ function addTabAndStoryEnhancements() {
     });
   };
 
+  const showOthersMode = () => {
+    tabs.hidden = false;
+    othersToggle?.classList.add('is-open');
+    document.body.classList.add('is-others-mode');
+    tabButtons.forEach((button) => button.classList.toggle('is-active', button.dataset.tab === 'skills'));
+    tabPanels.forEach((panel) => {
+      const active = ['skills', 'projects', 'services'].includes(panel.dataset.panel);
+      panel.hidden = !active;
+      panel.classList.toggle('is-active', active);
+    });
+  };
+
   const switchTab = (tabName) => {
     if (tabName === 'posts') {
       showPostsMode();
+      return;
+    }
+    if (tabName === 'skills') {
+      showOthersMode();
       return;
     }
     tabs.hidden = false;
@@ -96,7 +113,7 @@ function addTabAndStoryEnhancements() {
 
   tabButtons.forEach((button) => button.addEventListener('click', () => switchTab(button.dataset.tab)));
   othersToggle?.addEventListener('click', () => {
-    if (tabs.hidden) switchTab('skills');
+    if (tabs.hidden) showOthersMode();
     else showPostsMode();
   });
 
