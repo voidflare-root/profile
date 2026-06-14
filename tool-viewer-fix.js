@@ -36,8 +36,10 @@
         .tool-viewer-body{min-height:0;overflow:auto;padding:14px;background:#090911}
         #toolViewerStatus{margin:8px 0 14px;color:#b8b8b8;font-weight:800;line-height:1.5}
         #toolCommandList{display:grid;gap:10px}
-        .tool-command{border:1px solid rgba(168,85,247,.22);border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055)}
+        .tool-command,.tool-info{border:1px solid rgba(168,85,247,.22);border-radius:16px;display:grid;gap:10px;align-items:center;padding:10px;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055)}
+        .tool-command{grid-template-columns:minmax(0,1fr) auto}
         .tool-command code{min-width:0;overflow:auto;color:#fff;font-family:Consolas,Monaco,monospace;font-size:.86rem;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+        .tool-info{color:#d8c8ff;font-size:.9rem;font-weight:800;line-height:1.55}
         .tool-copy{min-height:38px;border-radius:13px;padding:0 12px;font-size:.78rem;font-weight:900}
         .tool-copy.is-copied{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.42)}
       `;
@@ -52,11 +54,20 @@
     return modal;
   }
 
-  function getCommands(text) {
+  function getRows(text) {
     return text
       .split(/\r?\n/)
       .map((line) => line.trim())
-      .filter((line) => line && line !== "```" && !line.startsWith("#"));
+      .filter((line) => line && line !== "```")
+      .map((line) => {
+        if (line.startsWith("#")) {
+          return { type: "info", text: line.replace(/^#+\s*/, "") };
+        }
+
+        const command = line.replace(/^\d+[\.)]\s+/, "");
+        return { type: "command", text: line, copyText: command };
+      })
+      .filter((row) => row.text);
   }
 
   async function copyCommand(command, button) {
@@ -81,26 +92,34 @@
     }, 1200);
   }
 
-  function renderCommands(commands) {
+  function renderRows(rows) {
     const list = document.querySelector("#toolCommandList");
     list.innerHTML = "";
 
-    if (!commands.length) {
+    if (!rows.length) {
       document.querySelector("#toolViewerStatus").textContent = "Is tool file me commands nahi mile. Har command ko alag line me rakho.";
       return;
     }
 
-    document.querySelector("#toolViewerStatus").textContent = "Command copy karne ke liye Copy dabao.";
-    commands.forEach((command) => {
+    document.querySelector("#toolViewerStatus").textContent = "Info text normal dikhega, commands copy button ke saath dikhenge.";
+    rows.forEach((row) => {
+      if (row.type === "info") {
+        const info = document.createElement("article");
+        info.className = "tool-info";
+        info.textContent = row.text;
+        list.appendChild(info);
+        return;
+      }
+
       const item = document.createElement("article");
       item.className = "tool-command";
       const code = document.createElement("code");
-      code.textContent = command;
+      code.textContent = row.text;
       const copy = document.createElement("button");
       copy.className = "tool-copy";
       copy.type = "button";
       copy.innerHTML = '<i class="fa-solid fa-copy"></i><span>Copy</span>';
-      copy.addEventListener("click", () => copyCommand(command, copy));
+      copy.addEventListener("click", () => copyCommand(row.copyText, copy));
       item.append(code, copy);
       list.appendChild(item);
     });
@@ -117,7 +136,7 @@
     try {
       const response = await fetch(url, { cache: "no-store" });
       if (!response.ok) throw new Error("Tool file failed");
-      renderCommands(getCommands(await response.text()));
+      renderRows(getRows(await response.text()));
     } catch {
       document.querySelector("#toolViewerStatus").textContent = "Tool open nahi ho pa raha. File public tools folder me upload karo.";
     }
