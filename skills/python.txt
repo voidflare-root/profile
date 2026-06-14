@@ -1,0 +1,5 @@
+Python
+
+Python automation, bots, AI tools, scripts aur backend logic ke liye powerful language hai.
+
+Isse Telegram bots, file tools, web scraping, AI projects aur daily task automation bana sakte hain.
