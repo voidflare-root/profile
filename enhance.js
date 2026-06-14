@@ -100,6 +100,27 @@ function addTabAndStoryEnhancements() {
     return name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
+  async function loadBio() {
+    const bioText = document.querySelector(".bio span");
+    if (!bioText) return;
+
+    const files = await getGithubFolderFiles("bio");
+    const bioFile = files.find((file) => file.name.toLowerCase() === "bio.txt") || files[0];
+    if (!bioFile) return;
+
+    try {
+      const response = await fetch(bioFile.download_url, { cache: "no-store" });
+      if (!response.ok) return;
+      const text = (await response.text())
+        .replace(/\r\n/g, "\n")
+        .replace(/[ \t]+/g, " ")
+        .trim();
+      if (text) bioText.textContent = text;
+    } catch {
+      // Keep the default bio if the GitHub file cannot be read.
+    }
+  }
+
   function renderFolderList(list, files, emptyText, opensInViewer) {
     list.innerHTML = "";
     if (!files.length) {
@@ -149,6 +170,7 @@ function addTabAndStoryEnhancements() {
 
   loadFolder("notes", "#notesList", '<p>GitHub ke <strong>notes</strong> folder me files upload karo, yahan show honge.</p>', true);
   loadFolder("tools", "#toolsList", '<p>GitHub ke <strong>tools</strong> folder me files upload karo, yahan show honge.</p>', true);
+  loadBio();
 
   if (!document.querySelector('script[src^="story-video-fix.js"]')) {
     const videoFix = document.createElement("script");
@@ -162,7 +184,7 @@ function addTabAndStoryEnhancements() {
   }
   if (!document.querySelector('script[src^="tool-viewer-fix.js"]')) {
     const toolViewerFix = document.createElement("script");
-    toolViewerFix.src = "tool-viewer-fix.js?v=3";
+    toolViewerFix.src = "tool-viewer-fix.js?v=4";
     document.body.appendChild(toolViewerFix);
   }
 }
