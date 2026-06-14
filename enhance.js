@@ -6,11 +6,21 @@ function addTabAndStoryEnhancements() {
     .profile-tabs{display:none!important}.tab-panel[hidden]{display:none!important}
     .tab-card-grid{padding:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tab-card-grid article,.tab-list a{min-height:104px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;align-content:center;justify-items:center;gap:10px;padding:12px;color:#fff;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055);text-align:center;font-size:.82rem;box-shadow:inset 0 0 20px rgba(168,85,247,.04)}.tab-card-grid i,.tab-list i{color:#a855f7;font-size:1.35rem;text-shadow:0 0 16px rgba(168,85,247,.72)}.tab-list{padding:10px;display:grid;gap:8px}.tab-list a{min-height:58px;grid-template-columns:minmax(0,1fr) auto;align-content:center;justify-items:stretch;text-align:left}
     body.is-others-mode .tab-panel[data-panel="skills"],body.is-others-mode .tab-panel[data-panel="projects"],body.is-others-mode .tab-panel[data-panel="services"],body.is-others-mode .tab-panel[data-panel="notes"]{margin:10px;border:1px solid rgba(168,85,247,.18);border-radius:22px;background:rgba(255,255,255,.035)}body.is-others-mode .tab-panel[data-panel="projects"],body.is-others-mode .tab-panel[data-panel="services"],body.is-others-mode .tab-panel[data-panel="notes"]{margin-top:0}
-    .notes-panel{padding:12px}.notes-head{min-height:46px;display:inline-flex;align-items:center;gap:10px;color:#a855f7;font-weight:900;text-shadow:0 0 16px rgba(168,85,247,.72)}.notes-list{display:grid;gap:10px}.notes-list p{margin:0;color:#b8b8b8;line-height:1.6}.note-item{min-height:74px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;gap:10px;padding:12px;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055)}.note-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.note-actions a{min-height:38px;border:1px solid rgba(168,85,247,.28);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.06);font-size:.82rem;font-weight:900}
+    .notes-panel{padding:12px}.notes-head{min-height:46px;display:inline-flex;align-items:center;gap:10px;color:#a855f7;font-weight:900;text-shadow:0 0 16px rgba(168,85,247,.72)}.notes-list{display:grid;gap:10px}.notes-list p{margin:0;color:#b8b8b8;line-height:1.6}.note-item{min-height:74px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;gap:10px;padding:12px;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055)}.note-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.note-actions a,.note-actions button{min-height:38px;border:1px solid rgba(168,85,247,.28);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;color:#fff;background:rgba(255,255,255,.06);cursor:pointer;font-size:.82rem;font-weight:900;text-decoration:none}
+    .note-modal{position:fixed;inset:0;z-index:70;padding:0;display:none;place-items:center;background:rgba(0,0,0,.92);backdrop-filter:blur(16px)}.note-modal.is-open{display:grid}.note-viewer{width:min(920px,100%);height:100vh;border:1px solid rgba(168,85,247,.32);display:grid;grid-template-rows:auto 1fr;background:#05050a;box-shadow:0 0 80px rgba(168,85,247,.44)}.note-viewer-bar{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid rgba(168,85,247,.24);background:rgba(255,255,255,.055)}.note-viewer-bar .modal-close{position:static;margin:0;flex:0 0 auto}.note-viewer iframe{width:100%;height:100%;border:0;background:#111}
     .info-section{display:none!important}.info-section#contact{display:block!important}body.is-others-mode .stories-section,body.is-others-mode .info-section#contact{display:none!important}
     .story-modal{padding:0;background:rgba(0,0,0,.92);backdrop-filter:blur(16px)}.story-card{width:min(460px,100%);height:100vh;border:0;border-radius:0;display:grid;grid-template-rows:1fr auto;background:#05050a;box-shadow:0 0 80px rgba(168,85,247,.48)}.story-card img,.story-card video{width:100%;height:100%;min-height:0;display:block;object-fit:cover;background:#05050a}.story-card h2{margin:0;padding:16px 18px 22px;font-size:1rem;background:linear-gradient(180deg,rgba(5,5,10,.2),rgba(5,5,10,.96))}.story-card .modal-close{top:14px;right:14px;margin:0;z-index:2;background:rgba(5,5,10,.82);box-shadow:0 0 22px rgba(168,85,247,.34)}
   `;
   document.head.appendChild(style);
+
+  if (!document.querySelector('#noteModal')) {
+    const modal = document.createElement('div');
+    modal.className = 'note-modal';
+    modal.id = 'noteModal';
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML = `<div class="note-viewer"><div class="note-viewer-bar"><strong id="noteViewerTitle">Note</strong><button class="modal-close" id="noteClose" aria-label="Close note"><i class="fa-solid fa-xmark"></i></button></div><iframe id="noteFrame" title="Note preview"></iframe></div>`;
+    document.body.appendChild(modal);
+  }
 
   const actionRow = document.querySelector('.action-row');
   const highlight = document.querySelector('.highlight-block');
@@ -74,6 +84,22 @@ function addTabAndStoryEnhancements() {
   skillsToggle?.addEventListener('click', showSkillsMode);
   notesToggle?.addEventListener('click', showNotesMode);
 
+  function openNoteViewer(title, url) {
+    document.querySelector('#noteViewerTitle').textContent = title;
+    document.querySelector('#noteFrame').src = url;
+    const modal = document.querySelector('#noteModal');
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+  function closeNoteViewer() {
+    document.querySelector('#noteFrame')?.removeAttribute('src');
+    const modal = document.querySelector('#noteModal');
+    modal?.classList.remove('is-open');
+    modal?.setAttribute('aria-hidden', 'true');
+  }
+  document.querySelector('#noteClose')?.addEventListener('click', closeNoteViewer);
+  document.querySelector('#noteModal')?.addEventListener('click', (event) => { if (event.target.id === 'noteModal') closeNoteViewer(); });
+
   async function loadNotes() {
     const notesList = document.querySelector('#notesList');
     if (!notesList) return;
@@ -96,8 +122,20 @@ function addTabAndStoryEnhancements() {
       const title = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
       const item = document.createElement('article');
       item.className = 'note-item';
-      item.innerHTML = `<strong></strong><div class="note-actions"><a href="${file.html_url || file.download_url}" target="_blank" rel="noreferrer"><i class="fa-solid fa-eye"></i><span>Open</span></a><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`;
-      item.querySelector('strong').textContent = title;
+      const titleEl = document.createElement('strong');
+      titleEl.textContent = title;
+      const actions = document.createElement('div');
+      actions.className = 'note-actions';
+      const open = document.createElement('button');
+      open.type = 'button';
+      open.innerHTML = '<i class="fa-solid fa-eye"></i><span>Open</span>';
+      open.addEventListener('click', () => openNoteViewer(title, file.download_url));
+      const download = document.createElement('a');
+      download.href = file.download_url;
+      download.download = file.name;
+      download.innerHTML = '<i class="fa-solid fa-download"></i><span>Download</span>';
+      actions.append(open, download);
+      item.append(titleEl, actions);
       notesList.appendChild(item);
     });
   }
