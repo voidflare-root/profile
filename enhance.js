@@ -77,20 +77,26 @@ function addTabAndStoryEnhancements() {
   async function loadNotes() {
     const notesList = document.querySelector('#notesList');
     if (!notesList) return;
+
     const host = window.location.hostname;
-    if (!host.endsWith('github.io')) return;
-    const owner = host.replace('.github.io', '');
-    const repo = window.location.pathname.split('/').filter(Boolean)[0] || `${owner}.github.io`;
+    let owner = 'voidflare-root';
+    let repo = 'profile';
+    if (host.endsWith('github.io')) {
+      owner = host.replace('.github.io', '');
+      repo = window.location.pathname.split('/').filter(Boolean)[0] || `${owner}.github.io`;
+    }
+
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/notes`, { cache: 'no-store' });
     if (!response.ok) return;
     const files = (await response.json()).filter((file) => file.type === 'file' && !file.name.startsWith('.'));
     if (!files.length) return;
+
     notesList.innerHTML = '';
     files.forEach((file) => {
       const title = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
       const item = document.createElement('article');
       item.className = 'note-item';
-      item.innerHTML = `<strong></strong><div class="note-actions"><a href="${file.download_url}" target="_blank" rel="noreferrer"><i class="fa-solid fa-eye"></i><span>Open</span></a><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`;
+      item.innerHTML = `<strong></strong><div class="note-actions"><a href="${file.html_url || file.download_url}" target="_blank" rel="noreferrer"><i class="fa-solid fa-eye"></i><span>Open</span></a><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`;
       item.querySelector('strong').textContent = title;
       notesList.appendChild(item);
     });
