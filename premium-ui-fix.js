@@ -23,15 +23,69 @@
       .post-card,.story-item{border:1px solid rgba(216,180,254,.2)!important;border-radius:20px!important;background:#080810!important;box-shadow:0 14px 40px rgba(0,0,0,.32),0 0 24px rgba(168,85,247,.1),inset 0 1px 0 rgba(255,255,255,.08)!important;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}.post-card:hover,.story-item:hover{transform:translateY(-3px);border-color:rgba(216,180,254,.48)!important;box-shadow:0 18px 52px rgba(0,0,0,.42),0 0 34px rgba(168,85,247,.28)!important}.post-card::after{background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(5,5,10,.84))!important}.post-card>span:not(.content-like){left:10px!important;right:10px!important;bottom:10px!important;border:1px solid rgba(255,255,255,.14);background:rgba(5,5,10,.72)!important;box-shadow:0 0 18px rgba(168,85,247,.18)}
       .content-like{border-color:rgba(255,255,255,.22)!important;background:rgba(8,8,16,.74)!important;box-shadow:0 0 20px rgba(168,85,247,.32)!important}.content-like.is-liked{background:rgba(168,85,247,.3)!important}.tab-card-grid article i,.role-boxes i,.notes-head i{filter:drop-shadow(0 0 12px rgba(168,85,247,.72))}.tab-card-grid article:hover,.note-item:hover,.contact-options a:hover,.social-name-row a:hover,.role-boxes span:hover{transform:translateY(-2px);border-color:rgba(216,180,254,.5)!important;box-shadow:0 0 32px rgba(168,85,247,.26),inset 0 1px 0 rgba(255,255,255,.14)!important}
       .modal-card,.qr-card,.story-card,.note-viewer,.tool-viewer{border-color:rgba(216,180,254,.42)!important;background:linear-gradient(145deg,rgba(13,13,20,.98),rgba(6,6,12,.96))!important;box-shadow:0 0 90px rgba(168,85,247,.36),0 24px 80px rgba(0,0,0,.6)!important}.modal-close{border-color:rgba(216,180,254,.34)!important;background:rgba(5,5,10,.86)!important;box-shadow:0 0 24px rgba(168,85,247,.22)!important}.toast{border-color:rgba(216,180,254,.42)!important;background:rgba(8,8,16,.94)!important;box-shadow:0 0 32px rgba(168,85,247,.42)!important}
-      @media (min-width:1024px){.app-shell{gap:22px!important}.profile-card{top:22px!important}.posts-section,.stories-section,.info-section{border-radius:30px!important}}@media (max-width:520px){.app-shell{padding:12px 10px 42px!important}.profile-card{padding:16px!important;border-radius:26px!important}.profile-line{gap:13px!important}.social-name-row{gap:7px}.section-title{gap:7px!important;padding:13px!important}.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle{min-height:40px!important;padding:0 7px!important;font-size:.76rem!important}.post-grid,.story-grid,.tab-card-grid{gap:7px!important;padding:8px!important}.post-card,.story-item{border-radius:17px!important}.role-boxes span,.action-row button,.action-row a{border-radius:16px!important}}
-      @keyframes premiumEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes premiumPulse{0%,100%{box-shadow:0 0 26px rgba(168,85,247,.72),0 0 70px rgba(168,85,247,.28)}50%{box-shadow:0 0 34px rgba(216,180,254,.86),0 0 88px rgba(168,85,247,.38)}}@keyframes premiumSweep{0%,100%{opacity:.25;transform:translateX(-8%)}50%{opacity:.55;transform:translateX(8%)}}
+      @media (max-width:1023px){.app-shell{width:min(100%,980px)!important;display:block!important;margin:0 auto!important}.profile-card,.posts-section,.stories-section,.info-section{width:min(720px,100%)!important;margin-left:auto!important;margin-right:auto!important}.posts-section,.stories-section,.info-section{margin-top:16px!important}}
+      @media (min-width:1024px){.app-shell{width:min(1120px,calc(100% - 48px))!important;display:grid!important;grid-template-columns:minmax(360px,430px) minmax(0,1fr)!important;gap:22px!important;align-items:start!important}.profile-card{position:sticky!important;top:22px!important;width:100%!important;margin:0!important;grid-column:1!important;grid-row:1 / span 8!important}.posts-section,.stories-section,.info-section{width:100%!important;grid-column:2!important}.posts-section{margin-top:0!important}.stories-section,.info-section{margin-top:16px!important}}
+      @media (min-width:1024px){.app-shell{gap:22px!important}.profile-card{top:22px!important}.posts-section,.stories-section,.info-section{border-radius:30px!important}}
+      @media (max-width:520px){.app-shell{padding:12px 10px 42px!important}.profile-card{padding:16px!important;border-radius:26px!important}.profile-line{gap:13px!important}.social-name-row{gap:7px}.section-title{gap:7px!important;padding:13px!important}.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle{min-height:40px!important;padding:0 7px!important;font-size:.76rem!important}.post-grid,.story-grid,.tab-card-grid{gap:7px!important;padding:8px!important}.post-card,.story-item{border-radius:17px!important}.role-boxes span,.action-row button,.action-row a{border-radius:16px!important}}
+      @keyframes premiumEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes premiumPulse{0%,100%{box-shadow:0 0 26px rgba(168,85,247,.72),0 0 70px rgba(168,85,247,.28)}50%{box-shadow:0 0 34px rgba(216,180,254,.86),0 0 88px rgba(168,85,247,.38)}}
+      @keyframes premiumSweep{0%,100%{opacity:.25;transform:translateX(-8%)}50%{opacity:.55;transform:translateX(8%)}}
     `;
     document.head.appendChild(style);
   }
 
+  function activatePanel(panelName) {
+    document.querySelectorAll(".tab-panel").forEach((panel) => {
+      const active = panel.dataset.panel === panelName;
+      panel.hidden = !active;
+      panel.classList.toggle("is-active", active);
+    });
+
+    const activeButton = {
+      posts: "#postsToggle",
+      skills: "#othersToggle",
+      notes: "#notesToggle",
+      tools: "#toolsToggle",
+    }[panelName];
+
+    ["#postsToggle", "#othersToggle", "#notesToggle", "#toolsToggle"].forEach((selector) => {
+      document.querySelector(selector)?.classList.toggle("is-open", selector === activeButton);
+    });
+
+    document.body.classList.toggle("is-others-mode", panelName !== "posts");
+  }
+
+  function bindResponsiveTabs() {
+    document.addEventListener(
+      "click",
+      (event) => {
+        const button = event.target.closest("#postsToggle,#othersToggle,#notesToggle,#toolsToggle");
+        if (!button) return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        const panelName =
+          button.id === "postsToggle"
+            ? "posts"
+            : button.id === "othersToggle"
+              ? "skills"
+              : button.id === "notesToggle"
+                ? "notes"
+                : "tools";
+        activatePanel(panelName);
+      },
+      true
+    );
+  }
+
   if (document.readyState === "loading") {
-    window.addEventListener("DOMContentLoaded", injectPremiumStyles);
+    window.addEventListener("DOMContentLoaded", () => {
+      injectPremiumStyles();
+      bindResponsiveTabs();
+    });
   } else {
     injectPremiumStyles();
+    bindResponsiveTabs();
   }
 })();
