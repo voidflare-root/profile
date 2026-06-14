@@ -1,0 +1,5 @@
+Java
+
+Java ek strong programming language hai jo Android, backend, desktop software aur object-oriented programming ke liye use hoti hai.
+
+Java se coding logic, classes, objects, loops, conditions aur app structure ko samajhne me help milti hai.
