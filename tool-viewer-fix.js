@@ -71,6 +71,109 @@ RADHE RADHE`;
     }
   }
 
+  function showMessage(message) {
+    const toast = document.querySelector("#toast");
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.classList.add("show");
+    window.clearTimeout(showMessage.timer);
+    showMessage.timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+  }
+
+  function ensureQrTools() {
+    const qrCard = document.querySelector(".qr-card");
+    const qrLink = document.querySelector("#qrLink");
+    const qrImage = document.querySelector("#qrImage");
+    if (!qrCard || !qrLink || !qrImage) return;
+
+    if (!document.querySelector("#qrEnhanceStyles")) {
+      const style = document.createElement("style");
+      style.id = "qrEnhanceStyles";
+      style.textContent = `
+        .qr-modal{animation:qrFadeIn .22s ease both}
+        .qr-modal.is-open .qr-card{animation:qrPopIn .34s cubic-bezier(.2,.85,.2,1.12) both}
+        .qr-card{transform-origin:center}
+        .qr-actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+        .qr-actions button,.qr-actions a{min-height:40px;border:1px solid rgba(168,85,247,.32);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0 8px;color:#fff;background:rgba(255,255,255,.07);font-size:.78rem;font-weight:900;text-decoration:none;cursor:pointer;box-shadow:inset 0 0 18px rgba(168,85,247,.05);transition:transform 160ms ease,box-shadow 160ms ease,background 160ms ease}
+        .qr-actions button:hover,.qr-actions button:active,.qr-actions a:hover,.qr-actions a:active{transform:translateY(-2px);background:rgba(168,85,247,.18);box-shadow:0 0 26px rgba(168,85,247,.38)}
+        @keyframes qrFadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes qrPopIn{from{opacity:0;transform:translateY(18px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @media (max-width:380px){.qr-actions{grid-template-columns:1fr}.qr-actions button,.qr-actions a{min-height:38px}}
+      `;
+      document.head.appendChild(style);
+    }
+
+    if (!document.querySelector("#qrActions")) {
+      const actions = document.createElement("div");
+      actions.className = "qr-actions";
+      actions.id = "qrActions";
+      actions.innerHTML = `
+        <button type="button" id="qrShare"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
+        <a id="qrDownload" href="#" download="piyush-profile-qr.png"><i class="fa-solid fa-download"></i><span>Download</span></a>
+        <button type="button" id="qrCopy"><i class="fa-solid fa-link"></i><span>Copy</span></button>
+      `;
+      qrImage.insertAdjacentElement("afterend", actions);
+    }
+
+    document.querySelector("#qrShare")?.addEventListener("click", async () => {
+      const link = qrLink.textContent.trim() || window.location.href.split("#")[0];
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "PIYUSH Profile", text: "PIYUSH profile link", url: link });
+          return;
+        } catch {
+          return;
+        }
+      }
+      await copyText(link);
+      showMessage("Profile link copied.");
+    });
+
+    document.querySelector("#qrCopy")?.addEventListener("click", async () => {
+      const link = qrLink.textContent.trim() || window.location.href.split("#")[0];
+      await copyText(link);
+      showMessage("QR link copied.");
+    });
+
+    document.querySelector("#qrDownload")?.addEventListener("click", async (event) => {
+      const download = event.currentTarget;
+      const src = qrImage.src;
+      if (!src) return;
+
+      try {
+        event.preventDefault();
+        const response = await fetch(src);
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = objectUrl;
+        link.download = "piyush-profile-qr.png";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1200);
+      } catch {
+        download.href = src;
+      }
+    });
+  }
+
   function ensureToolViewer() {
     let modal = document.querySelector("#toolViewerModal");
 
@@ -245,5 +348,6 @@ RADHE RADHE`;
     if (event.key === "Escape") closeToolViewer();
   });
 
+  ensureQrTools();
   loadBioFromGithub();
 })();
