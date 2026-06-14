@@ -1,0 +1,5 @@
+Kotlin
+
+Kotlin Android app development ke liye modern programming language hai. Isse clean code, app logic, button actions, API connection aur Android features build kiye ja sakte hain.
+
+Kotlin developer ke liye strong skill hai kyunki Android Studio me iska use bahut hota hai.
