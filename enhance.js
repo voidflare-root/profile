@@ -146,6 +146,11 @@ function addTabAndStoryEnhancements() {
     videoFix.src = 'story-video-fix.js?v=3';
     document.body.appendChild(videoFix);
   }
+  if (!document.querySelector('script[src^="note-viewer-fix.js"]')) {
+    const noteViewerFix = document.createElement('script');
+    noteViewerFix.src = 'note-viewer-fix.js?v=1';
+    document.body.appendChild(noteViewerFix);
+  }
 }
 
 window.addEventListener('load', addTabAndStoryEnhancements);
