@@ -37,7 +37,8 @@
         #toolViewerStatus{margin:8px 0 14px;color:#b8b8b8;font-weight:800;line-height:1.5}
         #toolCommandList{display:grid;gap:10px}
         .tool-command,.tool-info{border:1px solid rgba(168,85,247,.22);border-radius:16px;display:grid;gap:10px;align-items:center;padding:10px;background:linear-gradient(135deg,rgba(138,43,226,.13),rgba(168,85,247,.05)),rgba(255,255,255,.055)}
-        .tool-command{grid-template-columns:minmax(0,1fr) auto}
+        .tool-command{grid-template-columns:auto minmax(0,1fr) auto}
+        .tool-number{width:32px;height:32px;border-radius:999px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#8a2be2,#a855f7);font-size:.82rem;font-weight:900;box-shadow:0 0 20px rgba(168,85,247,.46)}
         .tool-command code{min-width:0;overflow:auto;color:#fff;font-family:Consolas,Monaco,monospace;font-size:.86rem;line-height:1.5;white-space:pre-wrap;word-break:break-word}
         .tool-info{color:#d8c8ff;font-size:.9rem;font-weight:800;line-height:1.55}
         .tool-copy{min-height:38px;border-radius:13px;padding:0 12px;font-size:.78rem;font-weight:900}
@@ -55,6 +56,7 @@
   }
 
   function getRows(text) {
+    let commandIndex = 0;
     return text
       .split(/\r?\n/)
       .map((line) => line.trim())
@@ -64,8 +66,9 @@
           return { type: "info", text: line.replace(/^#+\s*/, "") };
         }
 
-        const command = line.replace(/^\d+[\.)]\s+/, "");
-        return { type: "command", text: line, copyText: command };
+        commandIndex += 1;
+        const command = line.replace(/^\d+[\.)]?\s+/, "");
+        return { type: "command", number: commandIndex, text: command, copyText: command };
       })
       .filter((row) => row.text);
   }
@@ -113,6 +116,9 @@
 
       const item = document.createElement("article");
       item.className = "tool-command";
+      const number = document.createElement("span");
+      number.className = "tool-number";
+      number.textContent = row.number;
       const code = document.createElement("code");
       code.textContent = row.text;
       const copy = document.createElement("button");
@@ -120,7 +126,7 @@
       copy.type = "button";
       copy.innerHTML = '<i class="fa-solid fa-copy"></i><span>Copy</span>';
       copy.addEventListener("click", () => copyCommand(row.copyText, copy));
-      item.append(code, copy);
+      item.append(number, code, copy);
       list.appendChild(item);
     });
   }
