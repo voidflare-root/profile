@@ -14,6 +14,8 @@
     const bioText = document.querySelector(".bio span");
     if (!bioText) return;
 
+    ensureBioBox();
+
     try {
       const repo = getRepo();
       const response = await fetch(`https://api.github.com/repos/${repo}/contents/bio`, { cache: "no-store" });
@@ -26,10 +28,46 @@
       const bioResponse = await fetch(bioFile.download_url, { cache: "no-store" });
       if (!bioResponse.ok) return;
 
-      const text = (await bioResponse.text()).replace(/\s+/g, " ").trim();
+      const text = (await bioResponse.text())
+        .replace(/\r\n/g, "\n")
+        .replace(/[ \t]+/g, " ")
+        .trim();
       if (text) bioText.textContent = text;
     } catch {
       // Keep default bio if GitHub bio file is unavailable.
+    }
+  }
+
+  function ensureBioBox() {
+    const bio = document.querySelector(".bio");
+    const bioText = document.querySelector(".bio span");
+    if (!bio || !bioText) return;
+
+    const currentBio = bioText.textContent.trim();
+    const devotionLines = [...document.querySelectorAll(".devotion-tags span")]
+      .map((line) => line.textContent.trim())
+      .filter(Boolean);
+
+    if (!currentBio) {
+      bioText.textContent = `Welcome To My Profile I,am PIYUSH
+HAR HAR MAHADEV
+JAY SHREE RAM
+RADHE RADHE`;
+    } else if (!currentBio.includes("\n") && devotionLines.length) {
+      bioText.textContent = [currentBio, ...devotionLines].join("\n");
+    }
+
+    document.querySelector(".devotion-tags")?.remove();
+
+    if (!document.querySelector("#bioBoxStyles")) {
+      const style = document.createElement("style");
+      style.id = "bioBoxStyles";
+      style.textContent = `
+        .bio{margin:18px 0 0!important;border:1px solid rgba(168,85,247,.34)!important;border-radius:18px!important;padding:14px 12px!important;color:#fff!important;background:linear-gradient(135deg,rgba(138,43,226,.18),rgba(168,85,247,.08)),rgba(255,255,255,.055)!important;font-size:.92rem!important;font-weight:900!important;line-height:1.7!important;text-align:center!important;text-shadow:0 0 18px rgba(168,85,247,.72)!important;box-shadow:inset 0 0 20px rgba(168,85,247,.05)!important}
+        .bio span{white-space:pre-line!important}
+        .devotion-tags{display:none!important}
+      `;
+      document.head.appendChild(style);
     }
   }
 
