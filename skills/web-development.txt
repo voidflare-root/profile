@@ -1,0 +1,5 @@
+Web Development
+
+Web Development me websites aur web apps banana aata hai. Isme frontend UI, responsive layout, buttons, forms, animations aur hosting ka kaam hota hai.
+
+HTML, CSS aur JavaScript milkar ek complete website banate hain.
