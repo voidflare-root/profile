@@ -148,7 +148,7 @@ function addTabAndStoryEnhancements() {
   }
 
   loadFolder("notes", "#notesList", '<p>GitHub ke <strong>notes</strong> folder me files upload karo, yahan show honge.</p>', true);
-  loadFolder("tools", "#toolsList", '<p>GitHub ke <strong>tools</strong> folder me files upload karo, yahan show honge.</p>', false);
+  loadFolder("tools", "#toolsList", '<p>GitHub ke <strong>tools</strong> folder me files upload karo, yahan show honge.</p>', true);
 
   if (!document.querySelector('script[src^="story-video-fix.js"]')) {
     const videoFix = document.createElement("script");
@@ -159,6 +159,11 @@ function addTabAndStoryEnhancements() {
     const noteViewerFix = document.createElement("script");
     noteViewerFix.src = "note-viewer-fix.js?v=2";
     document.body.appendChild(noteViewerFix);
+  }
+  if (!document.querySelector('script[src^="tool-viewer-fix.js"]')) {
+    const toolViewerFix = document.createElement("script");
+    toolViewerFix.src = "tool-viewer-fix.js?v=1";
+    document.body.appendChild(toolViewerFix);
   }
 }
 
