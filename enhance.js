@@ -162,7 +162,7 @@ function addTabAndStoryEnhancements() {
   }
   if (!document.querySelector('script[src^="tool-viewer-fix.js"]')) {
     const toolViewerFix = document.createElement("script");
-    toolViewerFix.src = "tool-viewer-fix.js?v=1";
+    toolViewerFix.src = "tool-viewer-fix.js?v=3";
     document.body.appendChild(toolViewerFix);
   }
 }
