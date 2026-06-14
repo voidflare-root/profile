@@ -1,0 +1,5 @@
+HTML
+
+HTML website ka structure banata hai. Page ke headings, text, images, buttons, links, forms aur sections HTML se define hote hain.
+
+HTML web development ki basic aur important skill hai.
