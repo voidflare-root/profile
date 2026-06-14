@@ -1,0 +1,5 @@
+Coding
+
+Coding ka matlab problems ko logic se solve karna aur computer ko step-by-step instructions dena hai.
+
+Coding me practice, debugging, clean structure aur naye ideas ko real project me convert karna important hota hai.
