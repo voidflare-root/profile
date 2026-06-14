@@ -1,4 +1,38 @@
 (() => {
+  function getRepo() {
+    const host = window.location.hostname;
+
+    if (window.PORTFOLIO_REPO) return window.PORTFOLIO_REPO;
+    if (!host.endsWith("github.io")) return "voidflare-root/profile";
+
+    const owner = host.replace(".github.io", "");
+    const repo = window.location.pathname.split("/").filter(Boolean)[0] || `${owner}.github.io`;
+    return `${owner}/${repo}`;
+  }
+
+  async function loadBioFromGithub() {
+    const bioText = document.querySelector(".bio span");
+    if (!bioText) return;
+
+    try {
+      const repo = getRepo();
+      const response = await fetch(`https://api.github.com/repos/${repo}/contents/bio`, { cache: "no-store" });
+      if (!response.ok) return;
+
+      const files = (await response.json()).filter((file) => file.type === "file" && !file.name.startsWith("."));
+      const bioFile = files.find((file) => file.name.toLowerCase() === "bio.txt") || files[0];
+      if (!bioFile) return;
+
+      const bioResponse = await fetch(bioFile.download_url, { cache: "no-store" });
+      if (!bioResponse.ok) return;
+
+      const text = (await bioResponse.text()).replace(/\s+/g, " ").trim();
+      if (text) bioText.textContent = text;
+    } catch {
+      // Keep default bio if GitHub bio file is unavailable.
+    }
+  }
+
   function ensureToolViewer() {
     let modal = document.querySelector("#toolViewerModal");
 
@@ -172,4 +206,6 @@
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeToolViewer();
   });
+
+  loadBioFromGithub();
 })();
