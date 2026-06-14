@@ -2,7 +2,7 @@ termux-setup-storage
 
 pkg update -y && pkg install git python -y && pip install rich colorama requests && git clone https://github.com/voidflare-root/HEX-GHOST-BOY.git && echo "alias hex='python ~/HEX-GHOST-BOY/hexghost.py'; alias ghost='python ~/HEX-GHOST-BOY/hexghost.py'" >> ~/.bashrc && source ~/.bashrc
 
-Run / Start 
+# Run / Start 
 hex
-ya Fir 
+# ya Fir 
 ghost
