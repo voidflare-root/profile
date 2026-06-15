@@ -44,6 +44,7 @@
         return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`;
       }
       if (parsed.hostname.endsWith("dropbox.com")) parsed.searchParams.set("dl", "1");
+      if (parsed.hostname.includes("drive.google.com")) { const fileMatch = parsed.pathname.match(/\/file\/d\/([^/]+)/); const id = fileMatch?.[1] || parsed.searchParams.get("id"); if (id) return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`; }
       return parsed.toString();
     } catch { return trimmed; }
   }
@@ -131,7 +132,8 @@
     try { const file = decodeURIComponent(new URL(project.download, location.href).pathname.split("/").filter(Boolean).pop() || ""); if (file && file.includes(".")) return file; } catch {}
     return `${(project.name || "project").replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "project"}.zip`;
   }
-  function directDownload(project) { if (!project.download) return; const a = document.createElement("a"); a.href = project.download; a.download = filenameFrom(project); a.rel = "noreferrer"; document.body.appendChild(a); a.click(); a.remove(); }
+  function clickDownload(url, filename) { const a = document.createElement("a"); a.href = url; a.download = filename; a.rel = "noreferrer"; document.body.appendChild(a); a.click(); a.remove(); }
+  async function directDownload(project) { if (!project.download) return; const filename = filenameFrom(project); try { const r = await fetch(project.download, { cache: "no-store" }); if (!r.ok) throw new Error("Download failed"); const blob = await r.blob(); if (!blob.size) throw new Error("Empty file"); const objectUrl = URL.createObjectURL(blob); clickDownload(objectUrl, filename); setTimeout(() => URL.revokeObjectURL(objectUrl), 1000); } catch { clickDownload(project.download, filename); } }
   async function shareProject(project) { const url = `${location.origin}${location.pathname}?project=${encodeURIComponent(project.name)}#projects`; if (navigator.share) { try { await navigator.share({ title: project.name, text: `${project.name} download yahan milega.`, url }); return; } catch { return; } } await navigator.clipboard.writeText(url); const toast = document.querySelector("#toast"); if (toast) { toast.textContent = "Project website link copied."; toast.classList.add("show"); } }
   async function shareFile(file, folder) { const label = title(file.name); const url = `${location.origin}${location.pathname}?${folder}=${encodeURIComponent(file.name)}#${folder}`; if (navigator.share) { try { await navigator.share({ title: label, text: `${label} yahan open/download kar sakte ho.`, url }); return; } catch { return; } } await navigator.clipboard.writeText(url); const toast = document.querySelector("#toast"); if (toast) { toast.textContent = `${title(folder)} link copied.`; toast.classList.add("show"); } }
 
