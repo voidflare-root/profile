@@ -6,336 +6,53 @@
     <title>PIYUSH | Developer Profile</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link rel="stylesheet" href="styles.css" />
-    <style>
-      body:not(.ui-ready) .posts-section {
-        opacity: 0;
-      }
-    </style>
+    <style>body:not(.ui-ready) .posts-section{opacity:0}</style>
   </head>
   <body>
     <main class="app-shell">
       <section class="profile-card" id="home">
         <div class="profile-line">
-          <button class="dp-ring" id="dpStoryButton" type="button" aria-label="Open profile story">
-            <img
-              id="profileDp"
-              src="dp.png"
-              alt="Piyush profile photo"
-            />
-          </button>
+          <button class="dp-ring" id="dpStoryButton" type="button" aria-label="Open profile story"><img id="profileDp" src="dp.png" alt="Piyush profile photo" /></button>
           <div class="name-stack">
             <span>HEX GHOST</span>
-            <div class="name-row">
-              <h1>PIYUSH</h1>
-              <a
-                class="instagram-link"
-                href="https://www.instagram.com/i.ampys.ghost?igsh=MTZjMXNnNjJwaG43cg==&utm_source=ig_contact_invite"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Open PIYUSH Instagram"
-              >
-                <i class="fa-brands fa-instagram"></i>
-              </a>
-            </div>
-            <button class="song-button" id="songButton" type="button">
-              <i class="fa-solid fa-music"></i>
-              <span>Favorite Song</span>
-            </button>
+            <div class="name-row"><h1>PIYUSH</h1><a class="instagram-link" href="https://www.instagram.com/i.ampys.ghost?igsh=MTZjMXNnNjJwaG43cg==&utm_source=ig_contact_invite" target="_blank" rel="noreferrer" aria-label="Open PIYUSH Instagram"><i class="fa-brands fa-instagram"></i></a></div>
+            <button class="song-button" id="songButton" type="button"><i class="fa-solid fa-music"></i><span>Favorite Song</span></button>
             <audio id="favoriteSong" src="song.mp3" preload="metadata"></audio>
           </div>
         </div>
-
-        <p class="bio">
-          <span>Welcome To My Profile I,am PIYUSH
+        <p class="bio"><span>Welcome To My Profile I,am PIYUSH
 HAR HAR MAHADEV
 JAY SHREE RAM
-RADHE RADHE</span>
-        </p>
-
-        <div class="role-boxes" aria-label="Profile roles">
-          <span><i class="fa-solid fa-wand-magic-sparkles"></i> Creator</span>
-          <span><i class="fa-solid fa-gamepad"></i> Gamer</span>
-          <span><i class="fa-solid fa-pen-nib"></i> Editor</span>
-          <span><i class="fa-solid fa-code"></i> Developer</span>
-        </div>
-
-        <div class="social-link-block" aria-label="Social links">
-          <h2>Social Links</h2>
-          <div class="social-name-row">
-            <a href="https://www.instagram.com/i.ampys.ghost?igsh=MTZjMXNnNjJwaG43cg==&utm_source=ig_contact_invite" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-instagram"></i>
-              <span>Piyush</span>
-            </a>
-            <a href="https://www.instagram.com/itz._.rounak_2.0?igsh=MXNnZ2M4anpyMmJxZQ==" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-instagram"></i>
-              <span>Rounak</span>
-            </a>
-            <a href="https://www.instagram.com/shreekant6564?igsh=MWw2aHZheGJ5cGJudA==" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-instagram"></i>
-              <span>Shreekant</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="action-row" aria-label="Profile actions">
-          <button type="button" id="likeButton"><i class="fa-solid fa-heart"></i><span>Like</span></button>
-          <button type="button" id="shareButton"><i class="fa-solid fa-paper-plane"></i><span>Share</span></button>
-          <button type="button" id="qrButton"><i class="fa-solid fa-qrcode"></i><span>QR</span></button>
-          <a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a>
-        </div>
-
-        <div class="highlight-block" aria-label="Highlights">
-          <h2>Highlights</h2>
-          <div class="highlight-row" id="highlightRow"></div>
-        </div>
+RADHE RADHE</span></p>
+        <div class="role-boxes" aria-label="Profile roles"><span><i class="fa-solid fa-wand-magic-sparkles"></i> Creator</span><span><i class="fa-solid fa-gamepad"></i> Gamer</span><span><i class="fa-solid fa-pen-nib"></i> Editor</span><span><i class="fa-solid fa-code"></i> Developer</span></div>
+        <div class="social-link-block" aria-label="Social links"><h2>Social Links</h2><div class="social-name-row"><a href="https://www.instagram.com/i.ampys.ghost?igsh=MTZjMXNnNjJwaG43cg==&utm_source=ig_contact_invite" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i><span>Piyush</span></a><a href="https://www.instagram.com/itz._.rounak_2.0?igsh=MXNnZ2M4anpyMmJxZQ==" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i><span>Rounak</span></a><a href="https://www.instagram.com/shreekant6564?igsh=MWw2aHZheGJ5cGJudA==" target="_blank" rel="noreferrer"><i class="fa-brands fa-instagram"></i><span>Shreekant</span></a></div></div>
+        <div class="action-row" aria-label="Profile actions"><button type="button" id="likeButton"><i class="fa-solid fa-heart"></i><span>Like</span></button><button type="button" id="shareButton"><i class="fa-solid fa-paper-plane"></i><span>Share</span></button><button type="button" id="qrButton"><i class="fa-solid fa-qrcode"></i><span>QR</span></button><a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a></div>
+        <div class="highlight-block" aria-label="Highlights"><h2>Highlights</h2><div class="highlight-row" id="highlightRow"></div></div>
       </section>
-
       <section class="posts-section" id="posts">
-        <div class="section-title">
-          <button class="posts-toggle is-open" id="postsToggle" type="button">
-            <i class="fa-solid fa-table-cells"></i>
-            <span>Posts</span>
-          </button>
-          <button class="others-toggle" id="othersToggle" type="button">
-            <i class="fa-solid fa-code"></i>
-            <span>Skills</span>
-          </button>
-          <button class="notes-toggle" id="notesToggle" type="button">
-            <i class="fa-solid fa-note-sticky"></i>
-            <span>Notes</span>
-          </button>
-          <button class="tools-toggle" id="toolsToggle" type="button">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-            <span>Tools</span>
-          </button>
-          <button class="projects-toggle" id="projectsToggle" type="button">
-            <i class="fa-solid fa-folder-open"></i>
-            <span>Projects</span>
-          </button>
-        </div>
-
-        <div class="post-grid tab-panel is-active" id="postGrid" data-panel="posts">
-          <button class="post-card" data-title="Android App UI" data-tag="Android Development" data-description="A premium Android app interface with neon dashboard screens and clean Kotlin-ready layout.">
-            <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=700&q=80" alt="Android app UI" />
-            <span>Android</span>
-          </button>
-          <button class="post-card" data-title="AI Project Dashboard" data-tag="AI Creator" data-description="A futuristic AI control panel for analytics, prompts, automation, and project monitoring.">
-            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=700&q=80" alt="AI dashboard" />
-            <span>AI</span>
-          </button>
-          <button class="post-card" data-title="Cyber Portfolio" data-tag="Web Development" data-description="A dark neon portfolio website with glass sections, smooth effects, and mobile-first profile flow.">
-            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=700&q=80" alt="Cyber portfolio" />
-            <span>Web</span>
-          </button>
-          <button class="post-card" data-title="Telegram Bot System" data-tag="Python Automation" data-description="A smart Telegram bot setup for alerts, user commands, admin tools, and workflow automation.">
-            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=700&q=80" alt="Telegram bot project" />
-            <span>Bot</span>
-          </button>
-          <button class="post-card" data-title="Gaming Creator Page" data-tag="Creator Profile" data-description="A creator-first profile page for gaming streams, links, content highlights, and community connection.">
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=700&q=80" alt="Gaming creator page" />
-            <span>Creator</span>
-          </button>
-          <button class="post-card" data-title="Automation Toolkit" data-tag="Python Tools" data-description="A compact automation toolkit for scripts, APIs, reports, and practical productivity tasks.">
-            <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=700&q=80" alt="Automation toolkit" />
-            <span>Tools</span>
-          </button>
-        </div>
-
-        <div class="tab-panel tab-card-grid" data-panel="skills" hidden>
-          <article><i class="fa-brands fa-android"></i><strong>Android Development</strong></article>
-          <article><i class="fa-solid fa-code"></i><strong>Kotlin</strong></article>
-          <article><i class="fa-brands fa-python"></i><strong>Python</strong></article>
-          <article><i class="fa-solid fa-globe"></i><strong>Web Development</strong></article>
-          <article><i class="fa-brands fa-java"></i><strong>Java</strong></article>
-          <article><i class="fa-brands fa-html5"></i><strong>HTML</strong></article>
-          <article><i class="fa-brands fa-css3-alt"></i><strong>CSS</strong></article>
-          <article><i class="fa-solid fa-laptop-code"></i><strong>Coding</strong></article>
-          <article><i class="fa-solid fa-user-secret"></i><strong>Hacking</strong></article>
-          <article><i class="fa-solid fa-robot"></i><strong>AI Tools</strong></article>
-          <article><i class="fa-brands fa-telegram"></i><strong>Telegram Bots</strong></article>
-        </div>
-
-        <div class="tab-panel notes-panel projects-panel" data-panel="projects" hidden>
-          <div class="notes-head">
-            <i class="fa-solid fa-folder-open"></i>
-            <strong>Projects</strong>
-          </div>
-          <div class="notes-list" id="projectsList"></div>
-        </div>
-
-        <div class="tab-panel tab-card-grid" data-panel="services" hidden>
-          <article><i class="fa-solid fa-mobile-screen-button"></i><strong>App UI</strong></article>
-          <article><i class="fa-solid fa-code"></i><strong>Websites</strong></article>
-          <article><i class="fa-solid fa-robot"></i><strong>AI Projects</strong></article>
-        </div>
-
-        <div class="tab-panel notes-panel" data-panel="notes" hidden>
-          <div class="notes-head">
-            <i class="fa-solid fa-note-sticky"></i>
-            <strong>Notes</strong>
-          </div>
-          <div class="notes-list" id="notesList"></div>
-        </div>
-
-        <div class="tab-panel notes-panel tools-panel" data-panel="tools" hidden>
-          <div class="notes-head">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-            <strong>Tools</strong>
-          </div>
-          <div class="notes-list" id="toolsList"></div>
-        </div>
-
-        <div class="tab-panel contact-options tab-contact" data-panel="contact" hidden>
-          <a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer">
-            <i class="fa-brands fa-whatsapp"></i>
-            <span>WhatsApp</span>
-          </a>
-          <a href="https://t.me/PiyushxHelp_Bot" target="_blank" rel="noreferrer">
-            <i class="fa-brands fa-telegram"></i>
-            <span>Telegram Bot</span>
-          </a>
-        </div>
+        <div class="section-title"><button class="posts-toggle is-open" id="postsToggle" type="button"><i class="fa-solid fa-table-cells"></i><span>Posts</span></button><button class="others-toggle" id="othersToggle" type="button"><i class="fa-solid fa-code"></i><span>Skills</span></button><button class="notes-toggle" id="notesToggle" type="button"><i class="fa-solid fa-note-sticky"></i><span>Notes</span></button><button class="tools-toggle" id="toolsToggle" type="button"><i class="fa-solid fa-screwdriver-wrench"></i><span>Tools</span></button><button class="projects-toggle" id="projectsToggle" type="button"><i class="fa-solid fa-folder-open"></i><span>Projects</span></button></div>
+        <div class="post-grid tab-panel is-active" id="postGrid" data-panel="posts"><button class="post-card" data-title="Android App UI" data-tag="Android Development" data-description="A premium Android app interface with neon dashboard screens and clean Kotlin-ready layout."><img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=700&q=80" alt="Android app UI" /><span>Android</span></button><button class="post-card" data-title="AI Project Dashboard" data-tag="AI Creator" data-description="A futuristic AI control panel for analytics, prompts, automation, and project monitoring."><img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=700&q=80" alt="AI dashboard" /><span>AI</span></button><button class="post-card" data-title="Cyber Portfolio" data-tag="Web Development" data-description="A dark neon portfolio website with glass sections, smooth effects, and mobile-first profile flow."><img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=700&q=80" alt="Cyber portfolio" /><span>Web</span></button><button class="post-card" data-title="Telegram Bot System" data-tag="Python Automation" data-description="A smart Telegram bot setup for alerts, user commands, admin tools, and workflow automation."><img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=700&q=80" alt="Telegram bot project" /><span>Bot</span></button><button class="post-card" data-title="Gaming Creator Page" data-tag="Creator Profile" data-description="A creator-first profile page for gaming streams, links, content highlights, and community connection."><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=700&q=80" alt="Gaming creator page" /><span>Creator</span></button><button class="post-card" data-title="Automation Toolkit" data-tag="Python Tools" data-description="A compact automation toolkit for scripts, APIs, reports, and practical productivity tasks."><img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=700&q=80" alt="Automation toolkit" /><span>Tools</span></button></div>
+        <div class="tab-panel tab-card-grid" data-panel="skills" hidden><article><i class="fa-brands fa-android"></i><strong>Android Development</strong></article><article><i class="fa-solid fa-code"></i><strong>Kotlin</strong></article><article><i class="fa-brands fa-python"></i><strong>Python</strong></article><article><i class="fa-solid fa-globe"></i><strong>Web Development</strong></article><article><i class="fa-brands fa-java"></i><strong>Java</strong></article><article><i class="fa-brands fa-html5"></i><strong>HTML</strong></article><article><i class="fa-brands fa-css3-alt"></i><strong>CSS</strong></article><article><i class="fa-solid fa-laptop-code"></i><strong>Coding</strong></article><article><i class="fa-solid fa-user-secret"></i><strong>Hacking</strong></article><article><i class="fa-solid fa-robot"></i><strong>AI Tools</strong></article><article><i class="fa-brands fa-telegram"></i><strong>Telegram Bots</strong></article></div>
+        <div class="tab-panel notes-panel projects-panel" data-panel="projects" hidden><div class="notes-head"><i class="fa-solid fa-folder-open"></i><strong>Projects</strong></div><div class="notes-list" id="projectsList"></div></div>
+        <div class="tab-panel tab-card-grid" data-panel="services" hidden><article><i class="fa-solid fa-mobile-screen-button"></i><strong>App UI</strong></article><article><i class="fa-solid fa-code"></i><strong>Websites</strong></article><article><i class="fa-solid fa-robot"></i><strong>AI Projects</strong></article></div>
+        <div class="tab-panel notes-panel" data-panel="notes" hidden><div class="notes-head"><i class="fa-solid fa-note-sticky"></i><strong>Notes</strong></div><div class="notes-list" id="notesList"></div></div>
+        <div class="tab-panel notes-panel tools-panel" data-panel="tools" hidden><div class="notes-head"><i class="fa-solid fa-screwdriver-wrench"></i><strong>Tools</strong></div><div class="notes-list" id="toolsList"></div></div>
+        <div class="tab-panel contact-options tab-contact" data-panel="contact" hidden><a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a><a href="https://t.me/PiyushxHelp_Bot" target="_blank" rel="noreferrer"><i class="fa-brands fa-telegram"></i><span>Telegram Bot</span></a></div>
       </section>
-
-      <section class="stories-section" id="stories">
-        <div class="section-title">
-          <h2>Stories</h2>
-          <span>Latest moments</span>
-        </div>
-        <div class="story-grid" id="storyGrid"></div>
-      </section>
-
-      <section class="info-section" id="about">
-        <article class="glass-card">
-          <h2>About Me</h2>
-          <p>
-            I build modern Android apps, websites, AI projects, and automation systems with a
-            dark premium interface style.
-          </p>
-        </article>
-      </section>
-
-      <section class="info-section" id="skills">
-        <article class="glass-card">
-          <h2>Skills</h2>
-          <div class="chip-grid">
-            <span>Android Development</span>
-            <span>Kotlin</span>
-            <span>Python</span>
-            <span>Web Development</span>
-            <span>Java</span>
-            <span>HTML</span>
-            <span>CSS</span>
-            <span>Coding</span>
-            <span>Hacking</span>
-            <span>AI Tools</span>
-            <span>Telegram Bots</span>
-          </div>
-        </article>
-      </section>
-
-      <section class="info-section" id="projects">
-        <article class="glass-card">
-          <h2>Projects</h2>
-          <div class="mini-list">
-            <a href="#"><span>AI Dashboard</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-            <a href="#"><span>Android Creator App</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-            <a href="#"><span>Telegram Automation Bot</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          </div>
-        </article>
-      </section>
-
-      <section class="info-section" id="services">
-        <article class="glass-card">
-          <h2>Services</h2>
-          <div class="service-grid">
-            <span><i class="fa-solid fa-mobile-screen-button"></i> App UI</span>
-            <span><i class="fa-solid fa-code"></i> Websites</span>
-            <span><i class="fa-solid fa-robot"></i> AI Projects</span>
-          </div>
-        </article>
-      </section>
-
-      <section class="info-section" id="contact">
-        <article class="glass-card">
-          <h2>Contact</h2>
-          <div class="contact-options">
-            <a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-whatsapp"></i>
-              <span>Message Ghost on WhatsApp</span>
-            </a>
-            <a href="https://t.me/PiyushxHelp_Bot" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-telegram"></i>
-              <span>Telegram Bot</span>
-            </a>
-          </div>
-          <form class="contact-form" id="contactForm">
-            <input type="text" placeholder="Name" required />
-            <input type="email" placeholder="Email" required />
-            <textarea placeholder="Message" rows="4" required></textarea>
-            <button type="submit">Send Message</button>
-          </form>
-        </article>
-      </section>
+      <section class="stories-section" id="stories"><div class="section-title"><h2>Stories</h2><span>Latest moments</span></div><div class="story-grid" id="storyGrid"></div></section>
+      <section class="info-section" id="about"><article class="glass-card"><h2>About Me</h2><p>I build modern Android apps, websites, AI projects, and automation systems with a dark premium interface style.</p></article></section>
+      <section class="info-section" id="skills"><article class="glass-card"><h2>Skills</h2><div class="chip-grid"><span>Android Development</span><span>Kotlin</span><span>Python</span><span>Web Development</span><span>Java</span><span>HTML</span><span>CSS</span><span>Coding</span><span>Hacking</span><span>AI Tools</span><span>Telegram Bots</span></div></article></section>
+      <section class="info-section" id="projects"><article class="glass-card"><h2>Projects</h2><div class="mini-list"><a href="#"><span>AI Dashboard</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a href="#"><span>Android Creator App</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a href="#"><span>Telegram Automation Bot</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></article></section>
+      <section class="info-section" id="services"><article class="glass-card"><h2>Services</h2><div class="service-grid"><span><i class="fa-solid fa-mobile-screen-button"></i> App UI</span><span><i class="fa-solid fa-code"></i> Websites</span><span><i class="fa-solid fa-robot"></i> AI Projects</span></div></article></section>
+      <section class="info-section" id="contact"><article class="glass-card"><h2>Contact</h2><div class="contact-options"><a href="https://wa.me/message/ZSMEU67CK25OF1" target="_blank" rel="noreferrer"><i class="fa-brands fa-whatsapp"></i><span>Message Ghost on WhatsApp</span></a><a href="https://t.me/PiyushxHelp_Bot" target="_blank" rel="noreferrer"><i class="fa-brands fa-telegram"></i><span>Telegram Bot</span></a></div><form class="contact-form" id="contactForm"><input type="text" placeholder="Name" required /><input type="email" placeholder="Email" required /><textarea placeholder="Message" rows="4" required></textarea><button type="submit">Send Message</button></form></article></section>
     </main>
-
-    <div class="post-modal" id="postModal" aria-hidden="true">
-      <div class="modal-card">
-        <button class="modal-close" id="modalClose" aria-label="Close post">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <img id="modalImage" alt="" />
-        <div>
-          <span id="modalTag"></span>
-          <h2 id="modalTitle"></h2>
-          <p id="modalDescription"></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="qr-modal" id="qrModal" aria-hidden="true">
-      <div class="qr-card">
-        <button class="modal-close" id="qrClose" aria-label="Close QR">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <h2>PIYUSH</h2>
-        <p id="qrLink"></p>
-        <img id="qrImage" alt="PIYUSH profile QR code" />
-      </div>
-    </div>
-
-    <div class="story-modal" id="storyModal" aria-hidden="true">
-      <div class="story-card">
-        <button class="modal-close" id="storyClose" aria-label="Close story">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <img id="storyImage" alt="" />
-        <video id="storyVideo" playsinline controls hidden></video>
-        <h2 id="storyTitle"></h2>
-      </div>
-    </div>
-
-    <div class="note-modal" id="noteModal" aria-hidden="true" style="display: none !important;" hidden>
-      <div class="note-viewer">
-        <div class="note-viewer-bar">
-          <strong id="noteViewerTitle">Note</strong>
-          <button class="modal-close" id="noteClose" aria-label="Close note">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-        <iframe id="noteFrame" title="Note preview"></iframe>
-      </div>
-    </div>
-
+    <div class="post-modal" id="postModal" aria-hidden="true"><div class="modal-card"><button class="modal-close" id="modalClose" aria-label="Close post"><i class="fa-solid fa-xmark"></i></button><img id="modalImage" alt="" /><div><span id="modalTag"></span><h2 id="modalTitle"></h2><p id="modalDescription"></p></div></div></div>
+    <div class="qr-modal" id="qrModal" aria-hidden="true"><div class="qr-card"><button class="modal-close" id="qrClose" aria-label="Close QR"><i class="fa-solid fa-xmark"></i></button><h2>PIYUSH</h2><p id="qrLink"></p><img id="qrImage" alt="PIYUSH profile QR code" /></div></div>
+    <div class="story-modal" id="storyModal" aria-hidden="true"><div class="story-card"><button class="modal-close" id="storyClose" aria-label="Close story"><i class="fa-solid fa-xmark"></i></button><img id="storyImage" alt="" /><video id="storyVideo" playsinline controls hidden></video><h2 id="storyTitle"></h2></div></div>
+    <div class="note-modal" id="noteModal" aria-hidden="true" style="display: none !important;" hidden><div class="note-viewer"><div class="note-viewer-bar"><strong id="noteViewerTitle">Note</strong><button class="modal-close" id="noteClose" aria-label="Close note"><i class="fa-solid fa-xmark"></i></button></div><iframe id="noteFrame" title="Note preview"></iframe></div></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="script.js?v=3"></script>
     <script src="story-video-fix.js?v=4"></script>
@@ -343,6 +60,6 @@ RADHE RADHE</span>
     <script src="tool-viewer-fix.js?v=4"></script>
     <script src="likes-skills-fix.js?v=2"></script>
     <script src="premium-ui-fix.js?v=8"></script>
-    <script src="final-ui-fix.js?v=1"></script>
+    <script src="final-ui-fix.js?v=2"></script>
   </body>
 </html>
