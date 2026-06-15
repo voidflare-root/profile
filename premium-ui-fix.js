@@ -28,201 +28,117 @@
     document.head.appendChild(style);
   }
 
+  const title = (name) => name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const unique = (items, keyFn) => { const seen = new Set(); return items.filter((item) => { const key = keyFn(item); if (seen.has(key)) return false; seen.add(key); return true; }); };
+
+  function normalizeDownloadUrl(url) {
+    if (!url) return "";
+    const trimmed = url.trim();
+    try {
+      const parsed = new URL(trimmed, location.href);
+      if (parsed.hostname === "github.com" && parsed.pathname.includes("/blob/")) {
+        const parts = parsed.pathname.split("/").filter(Boolean);
+        const owner = parts[0], repo = parts[1], branchIndex = parts.indexOf("blob") + 1;
+        const branch = parts[branchIndex];
+        const filePath = parts.slice(branchIndex + 1).map(encodeURIComponent).join("/");
+        return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`;
+      }
+      if (parsed.hostname.endsWith("dropbox.com")) parsed.searchParams.set("dl", "1");
+      return parsed.toString();
+    } catch { return trimmed; }
+  }
+
+  function dedupeList(selector) {
+    const list = document.querySelector(selector);
+    if (!list) return;
+    const seen = new Set();
+    Array.from(list.children).forEach((item) => {
+      const label = item.querySelector("strong")?.textContent?.trim().toLowerCase() || "";
+      const link = item.querySelector("a[href]")?.href || item.querySelector(".project-download")?.dataset.download || "";
+      const key = `${label}|${link}`;
+      if (seen.has(key)) item.remove(); else seen.add(key);
+    });
+  }
+
   function hideLegacyNote() {
     const note = document.querySelector("#noteModal");
     if (!note) return;
-    note.classList.remove("is-open");
-    note.hidden = true;
-    note.setAttribute("aria-hidden", "true");
-    note.style.setProperty("display", "none", "important");
-    note.style.setProperty("visibility", "hidden", "important");
-    note.style.setProperty("height", "0", "important");
+    note.classList.remove("is-open"); note.hidden = true; note.setAttribute("aria-hidden", "true");
+    note.style.setProperty("display", "none", "important"); note.style.setProperty("visibility", "hidden", "important"); note.style.setProperty("height", "0", "important");
     document.querySelector("#noteFrame")?.removeAttribute("src");
   }
 
   function ensureProjectsUi() {
-    const title = document.querySelector("#posts .section-title");
-    if (title && !document.querySelector("#projectsToggle")) {
+    const titleBar = document.querySelector("#posts .section-title");
+    if (titleBar && !document.querySelector("#projectsToggle")) {
       const button = document.createElement("button");
-      button.className = "projects-toggle";
-      button.id = "projectsToggle";
-      button.type = "button";
+      button.className = "projects-toggle"; button.id = "projectsToggle"; button.type = "button";
       button.innerHTML = '<i class="fa-solid fa-folder-open"></i><span>Projects</span>';
-      title.appendChild(button);
+      titleBar.appendChild(button);
     }
     let panel = document.querySelector('.tab-panel[data-panel="projects"]');
-    if (!panel) {
-      panel = document.createElement("div");
-      panel.dataset.panel = "projects";
-      panel.hidden = true;
-      document.querySelector('.tab-panel[data-panel="tools"]')?.after(panel);
-    }
+    if (!panel) { panel = document.createElement("div"); panel.dataset.panel = "projects"; panel.hidden = true; document.querySelector('.tab-panel[data-panel="tools"]')?.after(panel); }
     panel.className = "tab-panel notes-panel projects-panel";
-    panel.innerHTML = '<div class="notes-head"><i class="fa-solid fa-folder-open"></i><strong>Projects</strong></div><div class="notes-list" id="projectsList"></div>';
+    if (!panel.querySelector("#projectsList")) panel.innerHTML = '<div class="notes-head"><i class="fa-solid fa-folder-open"></i><strong>Projects</strong></div><div class="notes-list" id="projectsList"></div>';
   }
 
-  function nameFromPath(name) {
-    return name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-  }
-
-  function cdnUrl(path) {
-    return `https://cdn.jsdelivr.net/gh/${REPO}@main/${path.split("/").map(encodeURIComponent).join("/")}`;
-  }
-
+  const cdnUrl = (path) => `https://cdn.jsdelivr.net/gh/${REPO}@main/${path.split("/").map(encodeURIComponent).join("/")}`;
   async function folderFiles(folder) {
     try {
-      const response = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
-      if (response.ok) {
-        return (await response.json()).filter((file) => {
-          const name = file.name.toLowerCase();
-          return file.type === "file" && !file.name.startsWith(".") && !name.startsWith("readme.") && file.download_url;
-        });
-      }
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
+      if (r.ok) return (await r.json()).filter((f) => f.type === "file" && !f.name.startsWith(".") && !f.name.toLowerCase().startsWith("readme.") && f.download_url);
     } catch {}
     try {
-      const response = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
-      if (!response.ok) return [];
+      const r = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
+      if (!r.ok) return [];
       const prefix = `/${folder}/`;
-      return (await response.json()).files
-        .filter((file) => file.name.startsWith(prefix))
-        .map((file) => {
-          const path = file.name.slice(1);
-          const name = path.split("/").pop();
-          return { name, path, type: "file", download_url: cdnUrl(path) };
-        })
-        .filter((file) => {
-          const name = file.name.toLowerCase();
-          return file.type === "file" && !file.name.startsWith(".") && !name.startsWith("readme.") && file.download_url;
-        });
+      return (await r.json()).files.filter((f) => f.name.startsWith(prefix)).map((f) => { const path = f.name.slice(1); const name = path.split("/").pop(); return { name, path, type: "file", download_url: cdnUrl(path) }; }).filter((f) => !f.name.startsWith(".") && !f.name.toLowerCase().startsWith("readme."));
     } catch { return []; }
   }
 
   function parseProjectText(text, file) {
     const data = {};
-    text.split(/\r?\n/).forEach((line) => {
-      const match = line.match(/^\s*([a-z]+)\s*[:=]\s*(.+)\s*$/i);
-      if (match) data[match[1].toLowerCase()] = match[2].trim();
-    });
-    return { name: data.name || data.title || nameFromPath(file.name), description: data.description || data.desc || "Project file ready for download.", download: data.download || data.src || data.link || file.download_url };
+    text.split(/\r?\n/).forEach((line) => { const m = line.match(/^\s*([a-z]+)\s*[:=]\s*(.+)\s*$/i); if (m) data[m[1].toLowerCase()] = m[2].trim(); });
+    return { name: data.name || data.title || title(file.name), description: data.description || data.desc || "Project file ready for download.", download: normalizeDownloadUrl(data.download || data.src || data.link || file.download_url) };
   }
 
   async function projectFromFile(file) {
     if (/\.(txt|md|json)$/i.test(file.name)) {
       try {
-        const response = await fetch(file.download_url, { cache: "no-store" });
-        if (response.ok) {
-          if (/\.json$/i.test(file.name)) {
-            const data = await response.json();
-            return { name: data.name || data.title || nameFromPath(file.name), description: data.description || data.desc || "Project file ready for download.", download: data.download || data.src || data.link || file.download_url };
-          }
-          return parseProjectText(await response.text(), file);
+        const r = await fetch(file.download_url, { cache: "no-store" });
+        if (r.ok) {
+          if (/\.json$/i.test(file.name)) { const data = await r.json(); return { name: data.name || data.title || title(file.name), description: data.description || data.desc || "Project file ready for download.", download: normalizeDownloadUrl(data.download || data.src || data.link || file.download_url) }; }
+          return parseProjectText(await r.text(), file);
         }
       } catch {}
     }
-    return { name: nameFromPath(file.name), description: "Project file ready for download.", download: file.download_url };
+    return { name: title(file.name), description: "Project file ready for download.", download: normalizeDownloadUrl(file.download_url) };
   }
 
-  function filenameFromProject(project) {
-    try {
-      const path = new URL(project.download, location.href).pathname;
-      const file = decodeURIComponent(path.split("/").filter(Boolean).pop() || "");
-      if (file && file.includes(".")) return file;
-    } catch {}
+  function filenameFrom(project) {
+    try { const file = decodeURIComponent(new URL(project.download, location.href).pathname.split("/").filter(Boolean).pop() || ""); if (file && file.includes(".")) return file; } catch {}
     return `${(project.name || "project").replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "project"}.zip`;
   }
-
-  function directDownload(project) {
-    if (!project.download || project.download === "#") return;
-    const link = document.createElement("a");
-    link.href = project.download;
-    link.download = filenameFromProject(project);
-    link.rel = "noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
-
-  async function shareProject(project) {
-    const url = `${location.origin}${location.pathname}?project=${encodeURIComponent(project.name)}#projects`;
-    const data = { title: project.name, text: `${project.name} download yahan milega.`, url };
-    if (navigator.share) { try { await navigator.share(data); return; } catch { return; } }
-    await navigator.clipboard.writeText(url);
-    const toast = document.querySelector("#toast");
-    if (toast) { toast.textContent = "Project website link copied."; toast.classList.add("show"); }
-  }
+  function directDownload(project) { if (!project.download) return; const a = document.createElement("a"); a.href = project.download; a.download = filenameFrom(project); a.rel = "noreferrer"; document.body.appendChild(a); a.click(); a.remove(); }
+  async function shareProject(project) { const url = `${location.origin}${location.pathname}?project=${encodeURIComponent(project.name)}#projects`; if (navigator.share) { try { await navigator.share({ title: project.name, text: `${project.name} download yahan milega.`, url }); return; } catch { return; } } await navigator.clipboard.writeText(url); const toast = document.querySelector("#toast"); if (toast) { toast.textContent = "Project website link copied."; toast.classList.add("show"); } }
 
   function renderProject(project) {
-    const item = document.createElement("article");
-    item.className = "project-item";
+    const item = document.createElement("article"); item.className = "project-item";
     item.innerHTML = `<div class="project-title"><i class="fa-solid fa-folder-open"></i><strong></strong></div><p class="project-desc"></p><div class="project-actions"><a href="#projects"><i class="fa-solid fa-eye"></i><span>Open</span></a><button type="button" class="project-download"><i class="fa-solid fa-download"></i><span>Download</span></button><button type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button></div>`;
-    item.querySelector("strong").textContent = project.name;
-    item.querySelector(".project-desc").textContent = project.description;
-    item.querySelector(".project-actions a").addEventListener("click", (event) => { event.preventDefault(); item.scrollIntoView({ behavior: "smooth", block: "center" }); });
-    item.querySelector(".project-download").addEventListener("click", () => directDownload(project));
-    item.querySelector(".project-actions button:last-child").addEventListener("click", () => shareProject(project));
+    item.querySelector("strong").textContent = project.name; item.querySelector(".project-desc").textContent = project.description; item.querySelector(".project-download").dataset.download = project.download || "";
+    item.querySelector(".project-actions a").addEventListener("click", (e) => { e.preventDefault(); item.scrollIntoView({ behavior: "smooth", block: "center" }); });
+    item.querySelector(".project-download").addEventListener("click", () => directDownload(project)); item.querySelector(".project-actions button:last-child").addEventListener("click", () => shareProject(project));
     return item;
   }
 
-  async function loadProjects() {
-    const list = document.querySelector("#projectsList");
-    if (!list) return;
-    list.innerHTML = "";
-    (await Promise.all((await folderFiles("projects")).map(projectFromFile))).forEach((project) => list.appendChild(renderProject(project)));
-  }
+  async function loadProjects() { const list = document.querySelector("#projectsList"); if (!list) return; list.innerHTML = ""; unique(await Promise.all((await folderFiles("projects")).map(projectFromFile)), (p) => `${p.name}|${p.download}`).forEach((p) => list.appendChild(renderProject(p))); dedupeList("#projectsList"); }
+  function renderSimple(file) { const item = document.createElement("article"); item.className = "note-item"; item.innerHTML = `<strong>${title(file.name)}</strong><div class="note-actions"><button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`; return item; }
+  async function renderSimpleFolder(folder, selector) { const list = document.querySelector(selector); if (!list) return; list.innerHTML = ""; unique(await folderFiles(folder), (f) => `${f.name}|${f.download_url}`).forEach((f) => list.appendChild(renderSimple(f))); dedupeList(selector); }
 
-  async function renderSimpleFolder(folder, selector) {
-    const list = document.querySelector(selector);
-    if (!list) return;
-    list.innerHTML = "";
-    (await folderFiles(folder)).forEach((file) => {
-      const item = document.createElement("article");
-      item.className = "note-item";
-      item.innerHTML = `<strong>${nameFromPath(file.name)}</strong><div class="note-actions"><button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`;
-      list.appendChild(item);
-    });
-  }
-
-  function ensureSkills() {
-    const panel = document.querySelector('.tab-panel[data-panel="skills"]');
-    if (!panel) return;
-    if (panel.querySelectorAll('[data-skill-file]').length >= SKILLS.length) return;
-    panel.classList.add("tab-card-grid");
-    panel.innerHTML = SKILLS.map(([icon, label, file]) => `<article role="button" tabindex="0" data-skill-file="${file}" data-skill-title="${label}" data-skill-icon="${icon}"><i class="${icon}"></i><strong>${label}</strong></article>`).join("");
-  }
-
-  function activate(panelName) {
-    document.querySelectorAll(".tab-panel").forEach((panel) => {
-      const active = panel.dataset.panel === panelName;
-      panel.hidden = !active;
-      panel.style.display = active ? "" : "none";
-      panel.classList.toggle("is-active", active);
-    });
-    const buttons = { posts: "#postsToggle", skills: "#othersToggle", notes: "#notesToggle", tools: "#toolsToggle", projects: "#projectsToggle" };
-    Object.entries(buttons).forEach(([name, selector]) => document.querySelector(selector)?.classList.toggle("is-open", name === panelName));
-    document.body.classList.toggle("is-others-mode", panelName !== "posts");
-    hideLegacyNote();
-    if (panelName === "projects") loadProjects();
-  }
-
-  function normalize() {
-    addStyles();
-    hideLegacyNote();
-    ensureProjectsUi();
-    ensureSkills();
-    renderSimpleFolder("notes", "#notesList");
-    renderSimpleFolder("tools", "#toolsList");
-    loadProjects();
-    activate(new URLSearchParams(location.search).has("project") || location.hash === "#projects" ? "projects" : (document.querySelector(".tab-panel.is-active")?.dataset.panel || "posts"));
-  }
-
-  document.addEventListener("click", (event) => {
-    const button = event.target.closest("#postsToggle,#othersToggle,#notesToggle,#toolsToggle,#projectsToggle");
-    if (!button) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    activate(button.id === "postsToggle" ? "posts" : button.id === "othersToggle" ? "skills" : button.id === "notesToggle" ? "notes" : button.id === "toolsToggle" ? "tools" : "projects");
-  }, true);
-
-  if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", normalize); else normalize();
-  window.addEventListener("load", () => { normalize(); setTimeout(hideLegacyNote, 250); setTimeout(ensureSkills, 500); setTimeout(hideLegacyNote, 1200); });
+  function ensureSkills() { const panel = document.querySelector('.tab-panel[data-panel="skills"]'); if (!panel || panel.querySelectorAll('[data-skill-file]').length >= SKILLS.length) return; panel.classList.add("tab-card-grid"); panel.innerHTML = SKILLS.map(([icon, label, file]) => `<article role="button" tabindex="0" data-skill-file="${file}" data-skill-title="${label}" data-skill-icon="${icon}"><i class="${icon}"></i><strong>${label}</strong></article>`).join(""); }
+  function activate(panelName) { document.querySelectorAll(".tab-panel").forEach((panel) => { const active = panel.dataset.panel === panelName; panel.hidden = !active; panel.style.display = active ? "" : "none"; panel.classList.toggle("is-active", active); }); const buttons = { posts: "#postsToggle", skills: "#othersToggle", notes: "#notesToggle", tools: "#toolsToggle", projects: "#projectsToggle" }; Object.entries(buttons).forEach(([name, selector]) => document.querySelector(selector)?.classList.toggle("is-open", name === panelName)); document.body.classList.toggle("is-others-mode", panelName !== "posts"); hideLegacyNote(); if (panelName === "projects") loadProjects(); }
+  function observeDedupe() { ["#notesList", "#toolsList", "#projectsList"].forEach((selector) => { const list = document.querySelector(selector); if (!list || list.dataset.dedupeObserver === "1") return; list.dataset.dedupeObserver = "1"; new MutationObserver(() => dedupeList(selector)).observe(list, { childList: true }); }); }
+  function normalize() { addStyles(); hideLegacyNote(); ensureProjectsUi(); ensureSkills(); renderSimpleFolder("notes", "#notesList"); renderSimpleFolder("tools", "#toolsList"); loadProjects(); observeDedupe(); activate(new URLSearchParams(location.search).has("project") || location.hash === "#projects" ? "projects" : (document.querySelector(".tab-panel.is-active")?.dataset.panel || "posts")); setTimeout(() => { dedupeList("#notesList"); dedupeList("#toolsList"); dedupeList("#projectsList"); }, 1500); }
+  document.addEventListener("click", (event) => { const button = event.target.closest("#postsToggle,#othersToggle,#notesToggle,#toolsToggle,#projectsToggle"); if (!button) return; event.preventDefault(); event.stopImmediatePropagation(); activate(button.id === "postsToggle" ? "posts" : button.id === "othersToggle" ? "skills" : button.id === "notesToggle" ? "notes" : button.id === "toolsToggle" ? "tools" : "projects"); }, true);
+  if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", normalize); else normalize(); window.addEventListener("load", () => { normalize(); setTimeout(hideLegacyNote, 250); setTimeout(ensureSkills, 500); });
 })();
