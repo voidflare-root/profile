@@ -1,1 +1,2 @@
 app https://github.com/voidflare-root/GHOSTxTunnel-/releases/download/v1.0.1/GHOSTxTunnel-debug.apk
+src https://github.com/voidflare-root/GHOSTxTunnel-/releases/download/v1.0.1/GHOSTxTunnel-source.zip
