@@ -68,6 +68,41 @@
     return name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
+  function filenameFromProject(project) {
+    try {
+      const path = new URL(project.download, location.href).pathname;
+      const file = decodeURIComponent(path.split("/").filter(Boolean).pop() || "");
+      if (file && file.includes(".")) return file;
+    } catch {}
+    return `${(project.name || "project").replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "project"}.zip`;
+  }
+
+  async function directDownload(project) {
+    const url = project.download;
+    if (!url || url === "#") return;
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) throw new Error("Download failed");
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = filenameFromProject(project);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
+    } catch {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filenameFromProject(project);
+      link.rel = "noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  }
+
   async function folderFiles(folder) {
     try {
       const response = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
@@ -120,11 +155,12 @@
   function renderProject(project) {
     const item = document.createElement("article");
     item.className = "project-item";
-    item.innerHTML = `<div class="project-title"><i class="fa-solid fa-folder-open"></i><strong></strong></div><p class="project-desc"></p><div class="project-actions"><a href="#projects"><i class="fa-solid fa-eye"></i><span>Open</span></a><a href="${project.download || "#"}" download><i class="fa-solid fa-download"></i><span>Download</span></a><button type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button></div>`;
+    item.innerHTML = `<div class="project-title"><i class="fa-solid fa-folder-open"></i><strong></strong></div><p class="project-desc"></p><div class="project-actions"><a href="#projects"><i class="fa-solid fa-eye"></i><span>Open</span></a><button type="button" class="project-download"><i class="fa-solid fa-download"></i><span>Download</span></button><button type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button></div>`;
     item.querySelector("strong").textContent = project.name;
     item.querySelector(".project-desc").textContent = project.description;
     item.querySelector(".project-actions a").addEventListener("click", (event) => { event.preventDefault(); item.scrollIntoView({ behavior: "smooth", block: "center" }); });
-    item.querySelector("button").addEventListener("click", () => shareProject(project));
+    item.querySelector(".project-download").addEventListener("click", () => directDownload(project));
+    item.querySelector(".project-actions button:last-child").addEventListener("click", () => shareProject(project));
     return item;
   }
 
