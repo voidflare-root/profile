@@ -97,9 +97,21 @@
   }
 
   function parseProjectText(text, file) {
+    const simpleProjects = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => {
+      const typed = line.match(/^(app|apk|src|source|sourcecode|code|zip)\s*[:=-]?\s+(https?:\/\/\S+)$/i);
+      if (typed) {
+        const kind = typed[1].toLowerCase().replace(/[^a-z]/g, "");
+        const label = kind === "app" || kind === "apk" ? "App" : kind === "src" || kind === "source" || kind === "sourcecode" || kind === "code" ? "Source Code" : kind === "zip" ? "Zip" : "Project";
+        return { name: `${title(file.name)} ${label}`, description: `${label} direct download.`, download: normalizeDownloadUrl(typed[2]) };
+      }
+      const direct = line.match(/^(https?:\/\/\S+)$/i);
+      return direct ? { name: title(file.name), description: "Project direct download.", download: normalizeDownloadUrl(direct[1]) } : null;
+    }).filter(Boolean);
+    if (simpleProjects.length) return simpleProjects;
+
     const data = {};
     text.split(/\r?\n/).forEach((line) => { const m = line.match(/^\s*([a-z]+)\s*[:=]\s*(.+)\s*$/i); if (m) data[m[1].toLowerCase()] = m[2].trim(); });
-    return { name: data.name || data.title || title(file.name), description: data.description || data.desc || "Project file ready for download.", download: normalizeDownloadUrl(data.download || data.src || data.link || file.download_url) };
+    return [{ name: data.name || data.title || title(file.name), description: data.description || data.desc || "Project file ready for download.", download: normalizeDownloadUrl(data.download || data.src || data.link || file.download_url) }];
   }
 
   async function projectFromFile(file) {
@@ -107,12 +119,12 @@
       try {
         const r = await fetch(file.download_url, { cache: "no-store" });
         if (r.ok) {
-          if (/\.json$/i.test(file.name)) { const data = await r.json(); return { name: data.name || data.title || title(file.name), description: data.description || data.desc || "Project file ready for download.", download: normalizeDownloadUrl(data.download || data.src || data.link || file.download_url) }; }
+          if (/\.json$/i.test(file.name)) { const data = await r.json(); const makeProject = (entry, index = 0) => ({ name: entry.name || entry.title || `${title(file.name)}${index ? ` ${index + 1}` : ""}`, description: entry.description || entry.desc || "Project file ready for download.", download: normalizeDownloadUrl(entry.download || entry.src || entry.link || file.download_url) }); return Array.isArray(data) ? data.map(makeProject) : [makeProject(data)]; }
           return parseProjectText(await r.text(), file);
         }
       } catch {}
     }
-    return { name: title(file.name), description: "Project file ready for download.", download: normalizeDownloadUrl(file.download_url) };
+    return [{ name: title(file.name), description: "Project file ready for download.", download: normalizeDownloadUrl(file.download_url) }];
   }
 
   function filenameFrom(project) {
@@ -131,7 +143,7 @@
     return item;
   }
 
-  async function loadProjects() { const list = document.querySelector("#projectsList"); if (!list) return; list.innerHTML = ""; unique(await Promise.all((await folderFiles("projects")).map(projectFromFile)), (p) => `${p.name}|${p.download}`).forEach((p) => list.appendChild(renderProject(p))); dedupeList("#projectsList"); }
+  async function loadProjects() { const list = document.querySelector("#projectsList"); if (!list) return; list.innerHTML = ""; unique((await Promise.all((await folderFiles("projects")).map(projectFromFile))).flat(), (p) => `${p.name}|${p.download}`).forEach((p) => list.appendChild(renderProject(p))); dedupeList("#projectsList"); }
   function renderSimple(file) { const item = document.createElement("article"); item.className = "note-item"; item.innerHTML = `<strong>${title(file.name)}</strong><div class="note-actions"><button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`; return item; }
   async function renderSimpleFolder(folder, selector) { const list = document.querySelector(selector); if (!list) return; list.innerHTML = ""; unique(await folderFiles(folder), (f) => `${f.name}|${f.download_url}`).forEach((f) => list.appendChild(renderSimple(f))); dedupeList(selector); }
 
