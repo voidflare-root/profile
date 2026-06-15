@@ -20,24 +20,27 @@
 
   async function folderFiles(folder) {
     try {
+      const flat = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
+      if (flat.ok) {
+        const files = (await flat.json()).files
+          .filter((file) => file.name.startsWith(`/${folder}/`))
+          .map((file) => {
+            const path = file.name.slice(1);
+            return { name: path.split("/").pop(), path, type: "file", download_url: cdnUrl(path) };
+          })
+          .filter((file) => !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
+        if (files.length) return files;
+      }
+    } catch {}
+    try {
       const api = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
       if (api.ok) {
         return (await api.json()).filter((file) => file.type === "file" && file.download_url && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
       }
-    } catch {}
-    try {
-      const flat = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
-      if (!flat.ok) return [];
-      return (await flat.json()).files
-        .filter((file) => file.name.startsWith(`/${folder}/`))
-        .map((file) => {
-          const path = file.name.slice(1);
-          return { name: path.split("/").pop(), path, type: "file", download_url: cdnUrl(path) };
-        })
-        .filter((file) => !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
     } catch {
       return [];
     }
+    return [];
   }
 
   function normalizeUrl(url) {
@@ -57,6 +60,20 @@
 
   function parseProjectFile(text, file) {
     const base = title(file.name);
+    const meta = {};
+    text.split(/\r?\n/).forEach((line) => {
+      const match = line.trim().match(/^(name|title|description|desc|download|url|link)\s*:\s*(.+)$/i);
+      if (match) meta[match[1].toLowerCase()] = match[2].trim();
+    });
+    const metaUrl = meta.download || meta.url || meta.link;
+    if (metaUrl) {
+      return [{
+        name: meta.name || meta.title || base,
+        description: meta.description || meta.desc || "Project direct download.",
+        download: normalizeUrl(metaUrl),
+        type: /\.apk(?:$|[?#])/i.test(metaUrl) ? "app" : /\.zip(?:$|[?#])/i.test(metaUrl) ? "zip" : "",
+      }];
+    }
     const projects = text.split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean)
@@ -75,10 +92,15 @@
   }
 
   async function projectFromFile(file) {
-    if (/\.(txt|md)$/i.test(file.name)) {
+    if (!/\.(apk|zip|rar|7z|png|jpe?g|webp|gif|mp4|mp3)$/i.test(file.name)) {
       try {
         const response = await fetch(file.download_url, { cache: "no-store" });
-        if (response.ok) return parseProjectFile(await response.text(), file);
+        if (response.ok) {
+          const text = await response.text();
+          if (/https?:\/\//i.test(text) || /^(name|title|description|desc|download|url|link|app|apk|src|source|zip)\s*[:=-]/im.test(text)) {
+            return parseProjectFile(text, file);
+          }
+        }
       } catch {}
     }
     return [{ name: title(file.name), description: "Project file ready for download.", download: normalizeUrl(file.download_url), type: "" }];
@@ -157,13 +179,12 @@
   async function loadProjects() {
     const list = $("#projectsList");
     if (!list) return;
-    list.innerHTML = "";
     const projects = unique((await Promise.all((await folderFiles("projects")).map(projectFromFile))).flat(), (p) => `${p.name}|${p.download}`);
     if (!projects.length) {
       list.innerHTML = '<p class="empty-state">Projects folder me file add karo.</p>';
       return;
     }
-    projects.forEach((project) => list.appendChild(renderProject(project)));
+    list.replaceChildren(...projects.map((project) => renderProject(project)));
   }
 
   function renderFolderFile(file, folder) {
@@ -185,13 +206,12 @@
   async function loadFolder(folder, selector) {
     const list = $(selector);
     if (!list) return;
-    list.innerHTML = "";
     const files = unique(await folderFiles(folder), (file) => `${file.name}|${file.download_url}`);
     if (!files.length) {
       list.innerHTML = `<p class="empty-state">${folder} folder me file add karo.</p>`;
       return;
     }
-    files.forEach((file) => list.appendChild(renderFolderFile(file, folder)));
+    list.replaceChildren(...files.map((file) => renderFolderFile(file, folder)));
   }
 
   function activate(panel) {
@@ -210,13 +230,17 @@
   }
 
   function bindTabs() {
-    document.addEventListener("click", (event) => {
+    if (document.body.dataset.finalTabsBound === "1") return;
+    document.body.dataset.finalTabsBound = "1";
+    const handleTabClick = (event) => {
       const button = event.target.closest("#postsToggle,#othersToggle,#notesToggle,#toolsToggle,#projectsToggle");
       if (!button) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       activate(button.id === "postsToggle" ? "posts" : button.id === "othersToggle" ? "skills" : button.id === "notesToggle" ? "notes" : button.id === "toolsToggle" ? "tools" : "projects");
-    }, true);
+    };
+    window.addEventListener("click", handleTabClick, true);
+    document.addEventListener("click", handleTabClick, true);
   }
 
   function init() {
@@ -225,6 +249,15 @@
     loadFolder("tools", "#toolsList");
     loadProjects();
     activate(new URLSearchParams(location.search).has("project") || location.hash === "#projects" ? "projects" : "posts");
+    [900, 2600].forEach((delay) => {
+      setTimeout(() => {
+        const active = $(".tab-panel.is-active")?.dataset.panel || "posts";
+        loadFolder("notes", "#notesList");
+        loadFolder("tools", "#toolsList");
+        loadProjects();
+        activate(active);
+      }, delay);
+    });
     document.body.classList.add("ui-ready");
   }
 
