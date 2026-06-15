@@ -14,17 +14,16 @@
     ["fa-brands fa-telegram", "Telegram Bots", "telegram-bots.txt"],
   ];
 
-  function injectStyles() {
+  function addStyles() {
     document.querySelector("#premiumUiStyles")?.remove();
     const style = document.createElement("style");
     style.id = "premiumUiStyles";
     style.textContent = `
-      body{background:radial-gradient(circle at 16% -8%,rgba(168,85,247,.34),transparent 36%),radial-gradient(circle at 92% 12%,rgba(34,197,94,.12),transparent 28%),radial-gradient(circle at 50% 112%,rgba(138,43,226,.22),transparent 34%),#030306!important}.app-shell{animation:premiumEnter .55s ease both}.profile-card,.posts-section,.glass-card{border-color:rgba(190,132,255,.38)!important;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035))!important;box-shadow:0 24px 90px rgba(0,0,0,.48),0 0 42px rgba(168,85,247,.16),inset 0 1px 0 rgba(255,255,255,.12)!important}.dp-ring{background:conic-gradient(from 180deg,#8a2be2,#d8b4fe,#fff,#a855f7,#8a2be2)!important;box-shadow:0 0 26px rgba(168,85,247,.72),0 0 70px rgba(168,85,247,.28)!important}.name-stack>span{display:inline-flex!important;width:max-content;max-width:100%;padding:5px 10px;border:1px solid rgba(168,85,247,.32);border-radius:999px;background:rgba(168,85,247,.12);font-size:.72rem!important}h1{background:linear-gradient(180deg,#fff,#e8d5ff 45%,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:0 0 28px rgba(168,85,247,.34)!important}
-      .instagram-link,.song-button,.action-row button,.action-row a,.role-boxes span,.social-name-row a,.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle,.projects-toggle,.tab-card-grid article,.tab-list a,.note-item,.project-item,.contact-options a{border-color:rgba(190,132,255,.34)!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 10px 28px rgba(0,0,0,.18)!important}.posts-toggle.is-open,.others-toggle.is-open,.notes-toggle.is-open,.tools-toggle.is-open,.projects-toggle.is-open{border-color:rgba(216,180,254,.64)!important;background:linear-gradient(145deg,rgba(168,85,247,.28),rgba(255,255,255,.07))!important;box-shadow:0 0 32px rgba(168,85,247,.42),inset 0 1px 0 rgba(255,255,255,.14)!important}.bio{border-color:rgba(216,180,254,.34)!important;background:linear-gradient(135deg,rgba(168,85,247,.22),rgba(255,255,255,.055))!important}.post-card,.story-item{border:1px solid rgba(216,180,254,.2)!important;border-radius:20px!important;background:#080810!important;box-shadow:0 14px 40px rgba(0,0,0,.32),0 0 24px rgba(168,85,247,.1),inset 0 1px 0 rgba(255,255,255,.08)!important}
-      .info-section,.stories-section,#noteModal,.note-modal,.note-modal.is-open{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;max-height:0!important;overflow:hidden!important}.tab-panel[hidden]{display:none!important}.notes-list:empty{display:none!important}#noteClose,#noteCanvasClose{display:none!important}.section-title{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:center;gap:8px}.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle,.projects-toggle{min-height:38px;border:1px solid rgba(168,85,247,.32);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 10px;color:#fff;background:rgba(255,255,255,.065);cursor:pointer;font-size:.8rem;font-weight:900}
-      .notes-panel,.projects-panel{padding:12px!important}.notes-list{display:grid;gap:10px}.note-item,.project-item{min-height:74px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;gap:10px;padding:12px}.note-actions,.project-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.note-actions a,.note-actions button,.project-actions a,.project-actions button{min-height:38px;border:1px solid rgba(168,85,247,.28);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;color:#fff;background:rgba(255,255,255,.06);cursor:pointer;font-size:.82rem;font-weight:900;text-decoration:none}.project-title{display:flex;align-items:center;gap:9px;color:#fff;font-weight:950}.project-title i{width:34px;height:34px;border:1px solid rgba(216,180,254,.35);border-radius:13px;display:grid;place-items:center;color:#d8b4fe;background:rgba(168,85,247,.16)}.project-desc{margin:0;color:#b8b8b8;font-size:.82rem;line-height:1.55}
+      body{background:radial-gradient(circle at 16% -8%,rgba(168,85,247,.34),transparent 36%),radial-gradient(circle at 92% 12%,rgba(34,197,94,.12),transparent 28%),radial-gradient(circle at 50% 112%,rgba(138,43,226,.22),transparent 34%),#030306!important}.profile-card,.posts-section{border-color:rgba(190,132,255,.38)!important;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035))!important;box-shadow:0 24px 90px rgba(0,0,0,.48),0 0 42px rgba(168,85,247,.16),inset 0 1px 0 rgba(255,255,255,.12)!important}.dp-ring{background:conic-gradient(from 180deg,#8a2be2,#d8b4fe,#fff,#a855f7,#8a2be2)!important;box-shadow:0 0 26px rgba(168,85,247,.72),0 0 70px rgba(168,85,247,.28)!important}.name-stack>span{display:inline-flex!important;width:max-content;max-width:100%;padding:5px 10px;border:1px solid rgba(168,85,247,.32);border-radius:999px;background:rgba(168,85,247,.12);font-size:.72rem!important}h1{background:linear-gradient(180deg,#fff,#e8d5ff 45%,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:0 0 28px rgba(168,85,247,.34)!important}
+      .posts-toggle,.others-toggle,.notes-toggle,.tools-toggle,.projects-toggle,.action-row button,.action-row a,.role-boxes span,.social-name-row a,.tab-card-grid article,.note-item,.project-item{border-color:rgba(190,132,255,.34)!important;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.045))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 10px 28px rgba(0,0,0,.18)!important}.posts-toggle.is-open,.others-toggle.is-open,.notes-toggle.is-open,.tools-toggle.is-open,.projects-toggle.is-open{border-color:rgba(216,180,254,.64)!important;background:linear-gradient(145deg,rgba(168,85,247,.28),rgba(255,255,255,.07))!important;box-shadow:0 0 32px rgba(168,85,247,.42),inset 0 1px 0 rgba(255,255,255,.14)!important}.post-card{border:1px solid rgba(216,180,254,.2)!important;border-radius:20px!important;background:#080810!important;box-shadow:0 14px 40px rgba(0,0,0,.32),0 0 24px rgba(168,85,247,.1),inset 0 1px 0 rgba(255,255,255,.08)!important}
+      .info-section,.stories-section,#noteModal,.note-modal,.note-modal.is-open{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;max-height:0!important;overflow:hidden!important}.tab-panel[hidden]{display:none!important}.notes-list:empty{display:none!important}#noteClose,#noteCanvasClose{display:none!important}.section-title{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;align-items:center;gap:8px}.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle,.projects-toggle{min-height:38px;border:1px solid rgba(168,85,247,.32);border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 10px;color:#fff;background:rgba(255,255,255,.065);cursor:pointer;font-size:.8rem;font-weight:900}.notes-panel,.projects-panel{padding:12px!important}.notes-list{display:grid;gap:10px}.note-item,.project-item{min-height:74px;border:1px solid rgba(168,85,247,.24);border-radius:18px;display:grid;gap:10px;padding:12px}.note-actions,.project-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.note-actions a,.note-actions button,.project-actions a,.project-actions button{min-height:38px;border:1px solid rgba(168,85,247,.28);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;color:#fff;background:rgba(255,255,255,.06);cursor:pointer;font-size:.82rem;font-weight:900;text-decoration:none}.project-title{display:flex;align-items:center;gap:9px;color:#fff;font-weight:950}.project-title i{width:34px;height:34px;border:1px solid rgba(216,180,254,.35);border-radius:13px;display:grid;place-items:center;color:#d8b4fe;background:rgba(168,85,247,.16)}.project-desc{margin:0;color:#b8b8b8;font-size:.82rem;line-height:1.55}
       .tab-panel[data-panel="skills"]{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;padding:12px!important}.tab-panel[data-panel="skills"][hidden]{display:none!important}.tab-panel[data-panel="skills"] article{position:relative;min-height:116px!important;border:1px solid rgba(216,180,254,.34)!important;border-radius:22px!important;display:grid!important;place-items:center!important;align-content:center!important;gap:10px!important;padding:14px 8px!important;text-align:center!important;background:radial-gradient(circle at 50% 0,rgba(216,180,254,.18),transparent 46%),linear-gradient(145deg,rgba(168,85,247,.18),rgba(255,255,255,.045))!important}.tab-panel[data-panel="skills"] article i{width:42px;height:42px;border:1px solid rgba(216,180,254,.38);border-radius:16px;display:grid;place-items:center;color:#fff!important;background:rgba(168,85,247,.2);font-size:1.35rem!important;box-shadow:0 0 26px rgba(168,85,247,.34)}.tab-panel[data-panel="skills"] article strong{font-size:.78rem!important;line-height:1.2!important;overflow-wrap:anywhere}
-      @media (max-width:1023px){.app-shell{width:min(100%,980px)!important;display:block!important;margin:0 auto!important}.profile-card,.posts-section{width:min(720px,100%)!important;margin-left:auto!important;margin-right:auto!important}.posts-section{margin-top:16px!important}}@media (min-width:1024px){.app-shell{width:min(1120px,calc(100% - 48px))!important;display:grid!important;grid-template-columns:minmax(360px,430px) minmax(0,1fr)!important;gap:22px!important;align-items:start!important}.profile-card{position:sticky!important;top:22px!important;width:100%!important;margin:0!important;grid-column:1!important;grid-row:1 / span 8!important}.posts-section{width:100%!important;grid-column:2!important;margin-top:0!important}}@media (max-width:520px){.app-shell{padding:12px 10px 42px!important}.profile-card{padding:16px!important;border-radius:26px!important}.section-title{gap:5px!important;padding:13px!important}.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle,.projects-toggle{min-height:38px!important;padding:0 4px!important;font-size:.68rem!important;gap:4px}.post-grid,.story-grid,.tab-card-grid{gap:7px!important;padding:8px!important}.project-actions{grid-template-columns:1fr!important}}
+      @media (max-width:1023px){.app-shell{width:min(100%,980px)!important;display:block!important;margin:0 auto!important}.profile-card,.posts-section{width:min(720px,100%)!important;margin-left:auto!important;margin-right:auto!important}.posts-section{margin-top:16px!important}}@media (min-width:1024px){.app-shell{width:min(1120px,calc(100% - 48px))!important;display:grid!important;grid-template-columns:minmax(360px,430px) minmax(0,1fr)!important;gap:22px!important;align-items:start!important}.profile-card{position:sticky!important;top:22px!important;width:100%!important;margin:0!important;grid-column:1!important;grid-row:1 / span 8!important}.posts-section{width:100%!important;grid-column:2!important;margin-top:0!important}}@media (max-width:520px){.app-shell{padding:12px 10px 42px!important}.profile-card{padding:16px!important;border-radius:26px!important}.section-title{gap:5px!important;padding:13px!important}.posts-toggle,.others-toggle,.notes-toggle,.tools-toggle,.projects-toggle{min-height:38px!important;padding:0 4px!important;font-size:.68rem!important;gap:4px}.post-grid,.story-grid,.tab-card-grid{gap:7px!important;padding:8px!important}.note-actions,.project-actions{grid-template-columns:1fr!important}}
     `;
     document.head.appendChild(style);
   }
@@ -58,14 +57,69 @@
       panel.hidden = true;
       document.querySelector('.tab-panel[data-panel="tools"]')?.after(panel);
     }
-    if (!panel.querySelector("#projectsList")) {
-      panel.className = "tab-panel notes-panel projects-panel";
-      panel.innerHTML = '<div class="notes-head"><i class="fa-solid fa-folder-open"></i><strong>Projects</strong></div><div class="notes-list" id="projectsList"></div>';
-    }
+    panel.className = "tab-panel notes-panel projects-panel";
+    panel.innerHTML = '<div class="notes-head"><i class="fa-solid fa-folder-open"></i><strong>Projects</strong></div><div class="notes-list" id="projectsList"></div>';
   }
 
-  function fileTitle(name) {
+  function nameFromPath(name) {
     return name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  }
+
+  function cdnUrl(path) {
+    return `https://cdn.jsdelivr.net/gh/${REPO}@main/${path.split("/").map(encodeURIComponent).join("/")}`;
+  }
+
+  async function folderFiles(folder) {
+    try {
+      const response = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
+      if (response.ok) {
+        return (await response.json()).filter((file) => {
+          const name = file.name.toLowerCase();
+          return file.type === "file" && !file.name.startsWith(".") && !name.startsWith("readme.") && file.download_url;
+        });
+      }
+    } catch {}
+    try {
+      const response = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) return [];
+      const prefix = `/${folder}/`;
+      return (await response.json()).files
+        .filter((file) => file.name.startsWith(prefix))
+        .map((file) => {
+          const path = file.name.slice(1);
+          const name = path.split("/").pop();
+          return { name, path, type: "file", download_url: cdnUrl(path) };
+        })
+        .filter((file) => {
+          const name = file.name.toLowerCase();
+          return file.type === "file" && !file.name.startsWith(".") && !name.startsWith("readme.") && file.download_url;
+        });
+    } catch { return []; }
+  }
+
+  function parseProjectText(text, file) {
+    const data = {};
+    text.split(/\r?\n/).forEach((line) => {
+      const match = line.match(/^\s*([a-z]+)\s*[:=]\s*(.+)\s*$/i);
+      if (match) data[match[1].toLowerCase()] = match[2].trim();
+    });
+    return { name: data.name || data.title || nameFromPath(file.name), description: data.description || data.desc || "Project file ready for download.", download: data.download || data.src || data.link || file.download_url };
+  }
+
+  async function projectFromFile(file) {
+    if (/\.(txt|md|json)$/i.test(file.name)) {
+      try {
+        const response = await fetch(file.download_url, { cache: "no-store" });
+        if (response.ok) {
+          if (/\.json$/i.test(file.name)) {
+            const data = await response.json();
+            return { name: data.name || data.title || nameFromPath(file.name), description: data.description || data.desc || "Project file ready for download.", download: data.download || data.src || data.link || file.download_url };
+          }
+          return parseProjectText(await response.text(), file);
+        }
+      } catch {}
+    }
+    return { name: nameFromPath(file.name), description: "Project file ready for download.", download: file.download_url };
   }
 
   function filenameFromProject(project) {
@@ -77,76 +131,21 @@
     return `${(project.name || "project").replace(/[^\w.-]+/g, "-").replace(/^-+|-+$/g, "") || "project"}.zip`;
   }
 
-  async function directDownload(project) {
-    const url = project.download;
-    if (!url || url === "#") return;
-    try {
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) throw new Error("Download failed");
-      const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = filenameFromProject(project);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 1500);
-    } catch {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filenameFromProject(project);
-      link.rel = "noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-  }
-
-  async function folderFiles(folder) {
-    try {
-      const response = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
-      if (!response.ok) return [];
-      return (await response.json()).filter((file) => {
-        const name = file.name.toLowerCase();
-        return file.type === "file" && !file.name.startsWith(".") && !name.startsWith("readme.") && file.download_url;
-      });
-    } catch {
-      return [];
-    }
-  }
-
-  function parseProjectText(text, file) {
-    const data = {};
-    text.split(/\r?\n/).forEach((line) => {
-      const match = line.match(/^\s*([a-z]+)\s*[:=]\s*(.+)\s*$/i);
-      if (match) data[match[1].toLowerCase()] = match[2].trim();
-    });
-    return { name: data.name || data.title || fileTitle(file.name), description: data.description || data.desc || "Project file ready for download.", download: data.download || data.src || data.link || file.download_url };
-  }
-
-  async function projectFromFile(file) {
-    if (/\.(txt|md|json)$/i.test(file.name)) {
-      try {
-        const response = await fetch(file.download_url, { cache: "no-store" });
-        if (response.ok) {
-          if (/\.json$/i.test(file.name)) {
-            const data = await response.json();
-            return { name: data.name || data.title || fileTitle(file.name), description: data.description || data.desc || "Project file ready for download.", download: data.download || data.src || data.link || file.download_url };
-          }
-          return parseProjectText(await response.text(), file);
-        }
-      } catch {}
-    }
-    return { name: fileTitle(file.name), description: "Project file ready for download.", download: file.download_url };
+  function directDownload(project) {
+    if (!project.download || project.download === "#") return;
+    const link = document.createElement("a");
+    link.href = project.download;
+    link.download = filenameFromProject(project);
+    link.rel = "noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
   async function shareProject(project) {
     const url = `${location.origin}${location.pathname}?project=${encodeURIComponent(project.name)}#projects`;
     const data = { title: project.name, text: `${project.name} download yahan milega.`, url };
-    if (navigator.share) {
-      try { await navigator.share(data); return; } catch { return; }
-    }
+    if (navigator.share) { try { await navigator.share(data); return; } catch { return; } }
     await navigator.clipboard.writeText(url);
     const toast = document.querySelector("#toast");
     if (toast) { toast.textContent = "Project website link copied."; toast.classList.add("show"); }
@@ -168,8 +167,7 @@
     const list = document.querySelector("#projectsList");
     if (!list) return;
     list.innerHTML = "";
-    const projects = await Promise.all((await folderFiles("projects")).map(projectFromFile));
-    projects.forEach((project) => list.appendChild(renderProject(project)));
+    (await Promise.all((await folderFiles("projects")).map(projectFromFile))).forEach((project) => list.appendChild(renderProject(project)));
   }
 
   async function renderSimpleFolder(folder, selector) {
@@ -179,7 +177,7 @@
     (await folderFiles(folder)).forEach((file) => {
       const item = document.createElement("article");
       item.className = "note-item";
-      item.innerHTML = `<strong>${fileTitle(file.name)}</strong><div class="note-actions"><button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`;
+      item.innerHTML = `<strong>${nameFromPath(file.name)}</strong><div class="note-actions"><button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a></div>`;
       list.appendChild(item);
     });
   }
@@ -207,7 +205,7 @@
   }
 
   function normalize() {
-    injectStyles();
+    addStyles();
     hideLegacyNote();
     ensureProjectsUi();
     ensureSkills();
