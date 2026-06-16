@@ -20,20 +20,23 @@
 
   async function folderFiles(folder) {
     const allFiles = [];
+    let manifestFiles = [];
     try {
       const manifest = await fetch(cdnUrl(`${folder}/index.json`) + `?t=${Date.now()}`, { cache: "no-store" });
       if (manifest.ok) {
         const entries = await manifest.json();
         const paths = Array.isArray(entries) ? entries : entries.files;
         if (Array.isArray(paths)) {
-          allFiles.push(...paths.map((entry) => {
+          manifestFiles = paths.map((entry) => {
             const path = typeof entry === "string" ? entry : entry.path;
             const label = typeof entry === "string" ? "" : entry.name;
             return { name: label || path.split("/").pop(), path, type: "file", download_url: cdnUrl(path) };
-          }).filter((file) => file.path && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme.")));
+          }).filter((file) => file.path && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme.") && file.name.toLowerCase() !== "index.json");
+          allFiles.push(...manifestFiles);
         }
       }
     } catch {}
+    if (folder === "projects" && manifestFiles.length) return unique(manifestFiles, (file) => `${file.name}|${file.path || file.download_url}`);
     try {
       const flat = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
       if (flat.ok) {
@@ -43,14 +46,14 @@
             const path = file.name.slice(1);
             return { name: path.split("/").pop(), path, type: "file", download_url: cdnUrl(path) };
           })
-          .filter((file) => !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
+          .filter((file) => !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme.") && file.name.toLowerCase() !== "index.json");
         allFiles.push(...files);
       }
     } catch {}
     try {
       const api = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
       if (api.ok) {
-        const files = (await api.json()).filter((file) => file.type === "file" && file.download_url && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
+        const files = (await api.json()).filter((file) => file.type === "file" && file.download_url && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme.") && file.name.toLowerCase() !== "index.json");
         allFiles.push(...files);
       }
     } catch {}
@@ -81,27 +84,18 @@
     });
     const metaUrl = meta.download || meta.url || meta.link;
     if (metaUrl) {
-      return [{
-        name: meta.name || meta.title || base,
-        description: meta.description || meta.desc || "Project direct download.",
-        download: normalizeUrl(metaUrl),
-        type: /\.apk(?:$|[?#])/i.test(metaUrl) ? "app" : /\.zip(?:$|[?#])/i.test(metaUrl) ? "zip" : "",
-      }];
+      return [{ name: meta.name || meta.title || base, description: meta.description || meta.desc || "Project direct download.", download: normalizeUrl(metaUrl), type: /\.apk(?:$|[?#])/i.test(metaUrl) ? "app" : /\.zip(?:$|[?#])/i.test(metaUrl) ? "zip" : "" }];
     }
-    const projects = text.split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .map((line) => {
-        const typed = line.match(/^(app|apk|src|source|sourcecode|code|zip)\s*[:=-]?\s+(https?:\/\/\S+)$/i);
-        if (typed) {
-          const type = typed[1].toLowerCase().replace(/[^a-z]/g, "");
-          const label = type === "app" || type === "apk" ? "App" : ["src", "source", "sourcecode", "code"].includes(type) ? "Source Code" : type === "zip" ? "Zip" : "Project";
-          return { name: `${base} ${label}`, description: `${label} direct download.`, download: normalizeUrl(typed[2]), type };
-        }
-        const direct = line.match(/^(https?:\/\/\S+)$/i);
-        return direct ? { name: base, description: "Project direct download.", download: normalizeUrl(direct[1]), type: "" } : null;
-      })
-      .filter(Boolean);
+    const projects = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map((line) => {
+      const typed = line.match(/^(app|apk|src|source|sourcecode|code|zip)\s*[:=-]?\s+(https?:\/\/\S+)$/i);
+      if (typed) {
+        const type = typed[1].toLowerCase().replace(/[^a-z]/g, "");
+        const label = type === "app" || type === "apk" ? "App" : ["src", "source", "sourcecode", "code"].includes(type) ? "Source Code" : type === "zip" ? "Zip" : "Project";
+        return { name: `${base} ${label}`, description: `${label} direct download.`, download: normalizeUrl(typed[2]), type };
+      }
+      const direct = line.match(/^(https?:\/\/\S+)$/i);
+      return direct ? { name: base, description: "Project direct download.", download: normalizeUrl(direct[1]), type: "" } : null;
+    }).filter(Boolean);
     return projects.length ? projects : [{ name: base, description: "Project file ready for download.", download: normalizeUrl(file.download_url), type: "" }];
   }
 
@@ -121,8 +115,7 @@
   function isOpenable(project) {
     const type = String(project.type || "").toLowerCase().replace(/[^a-z]/g, "");
     if (["src", "source", "sourcecode", "code", "zip"].includes(type)) return true;
-    try { return new URL(project.download, location.href).pathname.toLowerCase().endsWith(".zip"); }
-    catch { return /\.zip(?:$|[?#])/i.test(project.download || ""); }
+    try { return new URL(project.download, location.href).pathname.toLowerCase().endsWith(".zip"); } catch { return /\.zip(?:$|[?#])/i.test(project.download || ""); }
   }
 
   function filenameFrom(url, fallback) {
@@ -144,16 +137,10 @@
   }
 
   async function share(label, url) {
-    if (navigator.share) {
-      try { await navigator.share({ title: label, url }); return; } catch { return; }
-    }
+    if (navigator.share) { try { await navigator.share({ title: label, url }); return; } catch { return; } }
     await navigator.clipboard.writeText(url);
     const toast = $("#toast");
-    if (toast) {
-      toast.textContent = "Website link copied.";
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 1800);
-    }
+    if (toast) { toast.textContent = "Website link copied."; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 1800); }
   }
 
   function renderProject(project) {
