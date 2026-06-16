@@ -87,3 +87,10 @@
   if (document.readyState === "loading") window.addEventListener("DOMContentLoaded", bind);
   else bind();
 })();
+
+(() => {
+  if (document.querySelector('script[src*="direct-share-fix.js"]')) return;
+  const script = document.createElement("script");
+  script.src = "direct-share-fix.js?v=1";
+  document.body.appendChild(script);
+})();
