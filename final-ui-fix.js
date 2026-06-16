@@ -19,6 +19,21 @@
   }
 
   async function folderFiles(folder) {
+    const allFiles = [];
+    try {
+      const manifest = await fetch(cdnUrl(`${folder}/index.json`) + `?t=${Date.now()}`, { cache: "no-store" });
+      if (manifest.ok) {
+        const entries = await manifest.json();
+        const paths = Array.isArray(entries) ? entries : entries.files;
+        if (Array.isArray(paths)) {
+          allFiles.push(...paths.map((entry) => {
+            const path = typeof entry === "string" ? entry : entry.path;
+            const label = typeof entry === "string" ? "" : entry.name;
+            return { name: label || path.split("/").pop(), path, type: "file", download_url: cdnUrl(path) };
+          }).filter((file) => file.path && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme.")));
+        }
+      }
+    } catch {}
     try {
       const flat = await fetch(`https://data.jsdelivr.com/v1/package/gh/${REPO}@main/flat?t=${Date.now()}`, { cache: "no-store" });
       if (flat.ok) {
@@ -29,18 +44,17 @@
             return { name: path.split("/").pop(), path, type: "file", download_url: cdnUrl(path) };
           })
           .filter((file) => !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
-        if (files.length) return files;
+        allFiles.push(...files);
       }
     } catch {}
     try {
       const api = await fetch(`https://api.github.com/repos/${REPO}/contents/${folder}?t=${Date.now()}`, { cache: "no-store" });
       if (api.ok) {
-        return (await api.json()).filter((file) => file.type === "file" && file.download_url && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
+        const files = (await api.json()).filter((file) => file.type === "file" && file.download_url && !file.name.startsWith(".") && !file.name.toLowerCase().startsWith("readme."));
+        allFiles.push(...files);
       }
-    } catch {
-      return [];
-    }
-    return [];
+    } catch {}
+    return unique(allFiles, (file) => `${file.name}|${file.path || file.download_url}`);
   }
 
   function normalizeUrl(url) {
@@ -97,9 +111,7 @@
         const response = await fetch(file.download_url, { cache: "no-store" });
         if (response.ok) {
           const text = await response.text();
-          if (/https?:\/\//i.test(text) || /^(name|title|description|desc|download|url|link|app|apk|src|source|zip)\s*[:=-]/im.test(text)) {
-            return parseProjectFile(text, file);
-          }
+          if (/https?:\/\//i.test(text) || /^(name|title|description|desc|download|url|link|app|apk|src|source|zip)\s*[:=-]/im.test(text)) return parseProjectFile(text, file);
         }
       } catch {}
     }
@@ -109,11 +121,8 @@
   function isOpenable(project) {
     const type = String(project.type || "").toLowerCase().replace(/[^a-z]/g, "");
     if (["src", "source", "sourcecode", "code", "zip"].includes(type)) return true;
-    try {
-      return new URL(project.download, location.href).pathname.toLowerCase().endsWith(".zip");
-    } catch {
-      return /\.zip(?:$|[?#])/i.test(project.download || "");
-    }
+    try { return new URL(project.download, location.href).pathname.toLowerCase().endsWith(".zip"); }
+    catch { return /\.zip(?:$|[?#])/i.test(project.download || ""); }
   }
 
   function filenameFrom(url, fallback) {
@@ -136,12 +145,7 @@
 
   async function share(label, url) {
     if (navigator.share) {
-      try {
-        await navigator.share({ title: label, url });
-        return;
-      } catch {
-        return;
-      }
+      try { await navigator.share({ title: label, url }); return; } catch { return; }
     }
     await navigator.clipboard.writeText(url);
     const toast = $("#toast");
@@ -156,21 +160,11 @@
     const item = document.createElement("article");
     const open = isOpenable(project);
     item.className = "project-item";
-    item.innerHTML = `
-      <div class="project-title"><i class="fa-solid fa-folder-open"></i><strong></strong></div>
-      <p class="project-desc"></p>
-      <div class="project-actions ${open ? "" : "no-open"}">
-        ${open ? '<a class="project-open" href="#projects"><i class="fa-solid fa-eye"></i><span>Open</span></a>' : ""}
-        <button class="project-download" type="button"><i class="fa-solid fa-download"></i><span>Download</span></button>
-        <button class="project-share" type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
-      </div>`;
+    item.innerHTML = `<div class="project-title"><i class="fa-solid fa-folder-open"></i><strong></strong></div><p class="project-desc"></p><div class="project-actions ${open ? "" : "no-open"}">${open ? '<a class="project-open" href="#projects"><i class="fa-solid fa-eye"></i><span>Open</span></a>' : ""}<button class="project-download" type="button"><i class="fa-solid fa-download"></i><span>Download</span></button><button class="project-share" type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button></div>`;
     $("strong", item).textContent = project.name;
     $(".project-desc", item).textContent = project.description;
     $(".project-download", item).dataset.download = project.download;
-    $(".project-open", item)?.addEventListener("click", (event) => {
-      event.preventDefault();
-      directDownload(project.download, project.name);
-    });
+    $(".project-open", item)?.addEventListener("click", (event) => { event.preventDefault(); directDownload(project.download, project.name); });
     $(".project-download", item).addEventListener("click", () => directDownload(project.download, project.name));
     $(".project-share", item).addEventListener("click", () => share(project.name, `${location.origin}${location.pathname}?project=${encodeURIComponent(project.name)}#projects`));
     return item;
@@ -180,10 +174,7 @@
     const list = $("#projectsList");
     if (!list) return;
     const projects = unique((await Promise.all((await folderFiles("projects")).map(projectFromFile))).flat(), (p) => `${p.name}|${p.download}`);
-    if (!projects.length) {
-      list.innerHTML = '<p class="empty-state">Projects folder me file add karo.</p>';
-      return;
-    }
+    if (!projects.length) { list.innerHTML = '<p class="empty-state">Projects folder me file add karo.</p>'; return; }
     list.replaceChildren(...projects.map((project) => renderProject(project)));
   }
 
@@ -191,13 +182,7 @@
     const item = document.createElement("article");
     const label = title(file.name);
     item.className = "note-item";
-    item.innerHTML = `
-      <strong></strong>
-      <div class="note-actions">
-        <button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button>
-        <a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a>
-        <button class="file-share" type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button>
-      </div>`;
+    item.innerHTML = `<strong></strong><div class="note-actions"><button type="button"><i class="fa-solid fa-eye"></i><span>Open</span></button><a href="${file.download_url}" download="${file.name}"><i class="fa-solid fa-download"></i><span>Download</span></a><button class="file-share" type="button"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button></div>`;
     $("strong", item).textContent = label;
     $(".file-share", item).addEventListener("click", () => share(label, `${location.origin}${location.pathname}?${folder}=${encodeURIComponent(file.name)}#${folder}`));
     return item;
@@ -206,11 +191,8 @@
   async function loadFolder(folder, selector) {
     const list = $(selector);
     if (!list) return;
-    const files = unique(await folderFiles(folder), (file) => `${file.name}|${file.download_url}`);
-    if (!files.length) {
-      list.innerHTML = `<p class="empty-state">${folder} folder me file add karo.</p>`;
-      return;
-    }
+    const files = unique(await folderFiles(folder), (file) => `${file.name}|${file.path || file.download_url}`);
+    if (!files.length) { list.innerHTML = `<p class="empty-state">${folder} folder me file add karo.</p>`; return; }
     list.replaceChildren(...files.map((file) => renderFolderFile(file, folder)));
   }
 
@@ -221,8 +203,7 @@
       item.style.display = active ? "" : "none";
       item.classList.toggle("is-active", active);
     });
-    Object.entries({ posts: "#postsToggle", skills: "#othersToggle", notes: "#notesToggle", tools: "#toolsToggle", projects: "#projectsToggle" })
-      .forEach(([name, selector]) => $(selector)?.classList.toggle("is-open", name === panel));
+    Object.entries({ posts: "#postsToggle", skills: "#othersToggle", notes: "#notesToggle", tools: "#toolsToggle", projects: "#projectsToggle" }).forEach(([name, selector]) => $(selector)?.classList.toggle("is-open", name === panel));
     document.body.classList.toggle("is-others-mode", panel !== "posts");
     if (panel === "notes") loadFolder("notes", "#notesList");
     if (panel === "tools") loadFolder("tools", "#toolsList");
@@ -249,15 +230,13 @@
     loadFolder("tools", "#toolsList");
     loadProjects();
     activate(new URLSearchParams(location.search).has("project") || location.hash === "#projects" ? "projects" : "posts");
-    [900, 2600].forEach((delay) => {
-      setTimeout(() => {
-        const active = $(".tab-panel.is-active")?.dataset.panel || "posts";
-        loadFolder("notes", "#notesList");
-        loadFolder("tools", "#toolsList");
-        loadProjects();
-        activate(active);
-      }, delay);
-    });
+    [900, 2600].forEach((delay) => setTimeout(() => {
+      const active = $(".tab-panel.is-active")?.dataset.panel || "posts";
+      loadFolder("notes", "#notesList");
+      loadFolder("tools", "#toolsList");
+      loadProjects();
+      activate(active);
+    }, delay));
     document.body.classList.add("ui-ready");
   }
 
