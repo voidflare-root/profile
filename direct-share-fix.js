@@ -25,6 +25,43 @@
     .toLowerCase();
 
   function showPanel(panel) {
+    if (!$("#directShareOnlyStyles")) {
+      const style = document.createElement("style");
+      style.id = "directShareOnlyStyles";
+      style.textContent = `
+        body.direct-share-only .profile-card,
+        body.direct-share-only .stories-section,
+        body.direct-share-only .info-section,
+        body.direct-share-only .posts-section > .section-title,
+        body.direct-share-only .notes-head,
+        body.direct-share-only .tab-panel:not(.is-active),
+        body.direct-share-only .note-item[hidden],
+        body.direct-share-only .project-item[hidden] {
+          display: none !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    [
+      ".profile-card",
+      ".stories-section",
+      ".info-section",
+      "#home",
+      "#stories",
+      "#about",
+      "#skills",
+      "#services",
+      "#contact"
+    ].forEach((selector) => {
+      $$(selector).forEach((item) => {
+        item.hidden = true;
+        item.style.display = "none";
+      });
+    });
+    $$(".posts-section > .section-title,.notes-head").forEach((item) => {
+      item.hidden = true;
+      item.style.display = "none";
+    });
     $$(".tab-panel").forEach((item) => {
       const active = item.dataset.panel === panel;
       item.hidden = !active;
@@ -39,9 +76,14 @@
       projects: "#projectsToggle"
     };
     Object.entries(buttons).forEach(([name, selector]) => {
-      $(selector)?.classList.toggle("is-open", name === panel);
+      const button = $(selector);
+      if (!button) return;
+      button.classList.toggle("is-open", name === panel);
+      button.hidden = true;
+      button.style.display = "none";
     });
     document.body.classList.toggle("is-others-mode", panel !== "posts");
+    document.body.classList.add("direct-share-only");
   }
 
   function itemText(item) {
